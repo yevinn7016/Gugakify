@@ -17,35 +17,50 @@ class FinalResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final project = context.watch<ProjectProvider>();
     final ratio = aspectRatioValue(project.aspectRatio);
+    final audioDuration = Duration(
+      seconds: project.outputAudioDurationSeconds ?? 192,
+    );
+    final videoDuration = Duration(
+      seconds:
+          project.outputVideoDurationSeconds ??
+          project.outputAudioDurationSeconds ??
+          192,
+    );
     return GugakifyAppScaffold(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GugakHeader(title: '최종 결과', onBack: () => context.go('/mv/settings')),
           const SizedBox(height: 18),
-          const Text('최종 결과', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+          const Text(
+            '최종 결과',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+          ),
           const SizedBox(height: 16),
           MockVideoPlayer(
             title: '생성된 전통 MV',
+            duration: videoDuration,
             aspectRatio: ratio,
-            onDownload: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('다운로드할 MV가 아직 없습니다.')),
-            ),
+            onDownload: () => ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('다운로드할 MV가 아직 없습니다.'))),
           ),
           const SizedBox(height: 14),
           MockAudioPlayer(
             title: '변환된 국악 음원',
-            onDownload: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('다운로드할 음원이 아직 없습니다.')),
-            ),
+            duration: audioDuration,
+            onDownload: () => ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('다운로드할 음원이 아직 없습니다.'))),
           ),
           const SizedBox(height: 14),
           MockInfoPanel(
             title: '결과 요약',
             children: [
-              Text('길이 ${project.mvLength ?? 60}초'),
-              Text('${project.visualStyle ?? '수묵담채화'} 스타일'),
-              Text('${project.effectMode ?? '역동적으로'} 장단 반응 효과'),
+              Text('길이 ${formatDuration(videoDuration)}'),
+              const Text('음원 전체 흐름에 맞춘 전통 MV 생성'),
+              Text('${_visualStyleLabel(project.visualStyle)} 스타일'),
+              Text('${_effectLabel(project.effectMode)} 장단 반응 효과'),
               Text('${project.aspectRatio ?? '16:9'} 영상 비율'),
               const Text('128BPM · 자진모리 · energetic'),
             ],
@@ -62,13 +77,58 @@ class FinalResultScreen extends StatelessWidget {
           const SizedBox(height: 28),
           Row(
             children: [
-              Expanded(child: FlowActionButton(label: '다시 변환', primary: false, onPressed: () => context.go('/mv/settings'))),
+              Expanded(
+                child: FlowActionButton(
+                  label: '다시 변환',
+                  primary: false,
+                  onPressed: () => context.go('/mv/settings'),
+                ),
+              ),
               const SizedBox(width: 10),
-              Expanded(child: FlowActionButton(label: '홈으로', onPressed: () => context.go('/home'))),
+              Expanded(
+                child: FlowActionButton(
+                  label: '홈으로',
+                  onPressed: () => context.go('/home'),
+                ),
+              ),
             ],
           ),
         ],
       ),
     );
+  }
+}
+
+String _visualStyleLabel(String? value) {
+  switch (value) {
+    case 'sumukhwa':
+      return '수묵화';
+    case 'chaesaekhwa':
+      return '채색화';
+    case 'sumukh_damchae':
+      return '수묵담채화';
+    case 'palace_painting':
+      return '궁중채색화';
+    case 'landscape':
+      return '산수화';
+    case null:
+      return '수묵담채화';
+    default:
+      return value;
+  }
+}
+
+String _effectLabel(String? value) {
+  switch (value) {
+    case 'calm':
+      return '잔잔하게';
+    case 'balanced':
+      return '균형 있게';
+    case 'dynamic':
+      return '역동적으로';
+    case null:
+      return '역동적으로';
+    default:
+      return value;
   }
 }

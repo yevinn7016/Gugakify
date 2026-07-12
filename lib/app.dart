@@ -15,7 +15,9 @@ class GugakifyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider(AuthService())),
-        ChangeNotifierProvider(create: (_) => ProjectProvider()..loadRecentProjects()),
+        ChangeNotifierProvider(
+          create: (_) => ProjectProvider()..loadRecentProjects(),
+        ),
       ],
       child: Builder(
         builder: (context) {

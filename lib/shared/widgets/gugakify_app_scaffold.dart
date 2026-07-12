@@ -7,8 +7,8 @@ class GugakifyAppScaffold extends StatelessWidget {
   const GugakifyAppScaffold({
     super.key,
     required this.child,
-    this.backgroundColor = const Color(0xFFFFFCF7),
-    this.padding = const EdgeInsets.symmetric(horizontal: 24),
+    this.backgroundColor = const Color(0xFFFFFDF8),
+    this.padding = const EdgeInsets.symmetric(horizontal: 22),
   });
 
   final Widget child;
@@ -22,8 +22,8 @@ class GugakifyAppScaffold extends StatelessWidget {
         child: HanjiBackground(
           baseColor: backgroundColor,
           child: SingleChildScrollView(
-            padding: padding.add(const EdgeInsets.only(bottom: 32)),
-            child: child,
+            padding: padding.add(const EdgeInsets.only(bottom: 36)),
+            child: SizedBox(width: double.infinity, child: child),
           ),
         ),
       ),

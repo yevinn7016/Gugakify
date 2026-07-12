@@ -17,18 +17,48 @@ GoRouter createAppRouter(AuthProvider authProvider) {
   return GoRouter(
     initialLocation: '/intro',
     refreshListenable: authProvider,
+    redirect: (context, state) {
+      if (state.uri.path == '/mypage' && authProvider.isGuest) {
+        return '/home';
+      }
+      return null;
+    },
     routes: [
       GoRoute(path: '/intro', builder: (context, state) => const IntroScreen()),
       GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
       GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
-      GoRoute(path: '/upload', builder: (context, state) => const UploadScreen()),
-      GoRoute(path: '/audio/settings', builder: (context, state) => const AudioConvertSettingScreen()),
-      GoRoute(path: '/audio/processing', builder: (context, state) => const AudioProcessingScreen()),
-      GoRoute(path: '/audio/result', builder: (context, state) => const AudioResultScreen()),
-      GoRoute(path: '/mv/settings', builder: (context, state) => const MvSettingScreen()),
-      GoRoute(path: '/mv/processing', builder: (context, state) => const MvProcessingScreen()),
-      GoRoute(path: '/result', builder: (context, state) => const FinalResultScreen()),
-      GoRoute(path: '/mypage', builder: (context, state) => const MyPageScreen()),
+      GoRoute(
+        path: '/upload',
+        builder: (context, state) => const UploadScreen(),
+      ),
+      GoRoute(
+        path: '/audio/settings',
+        builder: (context, state) => const AudioConvertSettingScreen(),
+      ),
+      GoRoute(
+        path: '/audio/processing',
+        builder: (context, state) => const AudioProcessingScreen(),
+      ),
+      GoRoute(
+        path: '/audio/result',
+        builder: (context, state) => const AudioResultScreen(),
+      ),
+      GoRoute(
+        path: '/mv/settings',
+        builder: (context, state) => const MvSettingScreen(),
+      ),
+      GoRoute(
+        path: '/mv/processing',
+        builder: (context, state) => const MvProcessingScreen(),
+      ),
+      GoRoute(
+        path: '/result',
+        builder: (context, state) => const FinalResultScreen(),
+      ),
+      GoRoute(
+        path: '/mypage',
+        builder: (context, state) => const MyPageScreen(),
+      ),
     ],
   );
 }

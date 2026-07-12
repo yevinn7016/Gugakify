@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'gray_card.dart';
 
 class MockInfoPanel extends StatelessWidget {
-  const MockInfoPanel({
-    super.key,
-    required this.title,
-    required this.children,
-  });
+  const MockInfoPanel({super.key, required this.title, required this.children});
 
   final String title;
   final List<Widget> children;
@@ -18,7 +14,10 @@ class MockInfoPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+          ),
           const SizedBox(height: 12),
           ...children,
         ],

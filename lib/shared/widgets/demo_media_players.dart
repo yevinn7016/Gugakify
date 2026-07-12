@@ -18,7 +18,10 @@ Future<bool> _assetExists(String asset) async {
 }
 
 class DemoAudioPlayer extends StatefulWidget {
-  const DemoAudioPlayer({super.key, this.assetPath = 'assets/demo/demo_audio.mp3'});
+  const DemoAudioPlayer({
+    super.key,
+    this.assetPath = 'assets/demo/demo_audio.mp3',
+  });
 
   final String assetPath;
 
@@ -85,7 +88,11 @@ class _DemoAudioPlayerState extends State<DemoAudioPlayer> {
       child: Row(
         children: [
           IconButton(
-            icon: Icon(playing ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded),
+            icon: Icon(
+              playing
+                  ? Icons.pause_circle_filled_rounded
+                  : Icons.play_circle_fill_rounded,
+            ),
             color: AppColors.primaryPurple,
             onPressed: !_ready
                 ? null
@@ -98,16 +105,29 @@ class _DemoAudioPlayerState extends State<DemoAudioPlayer> {
                     if (mounted) setState(() {});
                   },
           ),
-          SizedBox(width: 44, child: Text(formatDuration(_position), style: const TextStyle(fontSize: 12))),
+          SizedBox(
+            width: 44,
+            child: Text(
+              formatDuration(_position),
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(99),
-              child: LinearProgressIndicator(value: value.clamp(0, 1), minHeight: 8),
+              child: LinearProgressIndicator(
+                value: value.clamp(0, 1),
+                minHeight: 8,
+              ),
             ),
           ),
           SizedBox(
             width: 44,
-            child: Text(formatDuration(_duration), textAlign: TextAlign.right, style: const TextStyle(fontSize: 12)),
+            child: Text(
+              formatDuration(_duration),
+              textAlign: TextAlign.right,
+              style: const TextStyle(fontSize: 12),
+            ),
           ),
         ],
       ),
@@ -116,7 +136,10 @@ class _DemoAudioPlayerState extends State<DemoAudioPlayer> {
 }
 
 class DemoVideoPlayer extends StatefulWidget {
-  const DemoVideoPlayer({super.key, this.assetPath = 'assets/demo/demo_video.mp4'});
+  const DemoVideoPlayer({
+    super.key,
+    this.assetPath = 'assets/demo/demo_video.mp4',
+  });
 
   final String assetPath;
 
@@ -170,7 +193,9 @@ class _DemoVideoPlayerState extends State<DemoVideoPlayer> {
       child: Column(
         children: [
           AspectRatio(
-            aspectRatio: controller?.value.aspectRatio == 0 ? 16 / 9 : controller?.value.aspectRatio ?? 16 / 9,
+            aspectRatio: controller?.value.aspectRatio == 0
+                ? 16 / 9
+                : controller?.value.aspectRatio ?? 16 / 9,
             child: Container(
               alignment: Alignment.center,
               color: Colors.black12,
@@ -181,12 +206,18 @@ class _DemoVideoPlayerState extends State<DemoVideoPlayer> {
           ),
           const SizedBox(height: 8),
           IconButton(
-            icon: Icon(controller?.value.isPlaying == true ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded),
+            icon: Icon(
+              controller?.value.isPlaying == true
+                  ? Icons.pause_circle_filled_rounded
+                  : Icons.play_circle_fill_rounded,
+            ),
             color: AppColors.primaryPurple,
             onPressed: controller == null
                 ? null
                 : () {
-                    controller.value.isPlaying ? controller.pause() : controller.play();
+                    controller.value.isPlaying
+                        ? controller.pause()
+                        : controller.play();
                   },
           ),
         ],

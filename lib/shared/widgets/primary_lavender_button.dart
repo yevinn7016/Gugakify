@@ -23,11 +23,20 @@ class PrimaryLavenderButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
-          elevation: WidgetStateProperty.resolveWith((states) => states.contains(WidgetState.pressed) ? 0 : 1),
-          backgroundColor: WidgetStateProperty.all(enabled ? AppColors.lightPurple : AppColors.disabledGray),
-          foregroundColor: WidgetStateProperty.all(enabled ? AppColors.primaryPurple : AppColors.textGray),
+          elevation: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.pressed) ? 0 : 1,
+          ),
+          backgroundColor: WidgetStateProperty.all(
+            enabled ? AppColors.lightPurple : AppColors.disabledGray,
+          ),
+          foregroundColor: WidgetStateProperty.all(
+            enabled ? AppColors.primaryPurple : AppColors.textGray,
+          ),
+          shadowColor: WidgetStateProperty.all(
+            AppColors.primaryPurple.withValues(alpha: 0.12),
+          ),
           shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
         ),
         child: Row(
@@ -40,7 +49,10 @@ class PrimaryLavenderButton extends StatelessWidget {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],
@@ -70,12 +82,20 @@ class SecondaryOutlineButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primaryPurple,
+          foregroundColor: onPressed == null
+              ? AppColors.textGray
+              : AppColors.primaryPurple,
           side: BorderSide(
-            color: onPressed == null ? AppColors.disabledGray : AppColors.primaryPurple.withValues(alpha: 0.45),
+            color: onPressed == null
+                ? AppColors.disabledGray
+                : AppColors.primaryPurple.withValues(alpha: 0.45),
           ),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: Colors.white.withValues(alpha: 0.82),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor: onPressed == null
+              ? AppColors.disabledGray
+              : AppColors.white,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -87,7 +107,10 @@ class SecondaryOutlineButton extends StatelessWidget {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],

@@ -1,4 +1,9 @@
+import 'dart:math' as math;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/theme/app_colors.dart';
 
 class MobileShell extends StatelessWidget {
   const MobileShell({super.key, required this.child});
@@ -7,12 +12,30 @@ class MobileShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final appWidth = kIsWeb ? math.min(screenWidth, 392.0) : screenWidth;
+
     return ColoredBox(
-      color: const Color(0xFFF6F2FA),
+      color: AppColors.webOuterBackground,
       child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 392),
-          child: SafeArea(child: child),
+        child: SizedBox(
+          width: appWidth,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                if (kIsWeb)
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+              ],
+            ),
+            child: SafeArea(
+              child: SizedBox(width: double.infinity, child: child),
+            ),
+          ),
         ),
       ),
     );

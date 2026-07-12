@@ -9,7 +9,7 @@ class MockMediaPlayer extends StatefulWidget {
   const MockMediaPlayer({
     super.key,
     required this.title,
-    this.duration = const Duration(seconds: 30),
+    this.duration = const Duration(seconds: 192),
     this.mediaUrl,
     this.isVideo = false,
     this.showPreviewBox = false,
@@ -71,8 +71,16 @@ class _MockMediaPlayerState extends State<MockMediaPlayer> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.cardGray,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.mediaCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.72)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.035),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -84,7 +92,10 @@ class _MockMediaPlayerState extends State<MockMediaPlayer> {
                   widget.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               SizedBox(
@@ -129,14 +140,21 @@ class _MockMediaPlayerState extends State<MockMediaPlayer> {
                   height: 40,
                   child: IconButton(
                     padding: EdgeInsets.zero,
-                    icon: Icon(_playing ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded),
+                    icon: Icon(
+                      _playing
+                          ? Icons.pause_circle_filled_rounded
+                          : Icons.play_circle_fill_rounded,
+                    ),
                     color: AppColors.primaryPurple,
                     onPressed: _toggle,
                   ),
                 ),
                 SizedBox(
                   width: 44,
-                  child: Text(formatDuration(_position), style: const TextStyle(fontSize: 12)),
+                  child: Text(
+                    formatDuration(_position),
+                    style: const TextStyle(fontSize: 12),
+                  ),
                 ),
                 Expanded(
                   child: ClipRRect(
@@ -168,11 +186,13 @@ class MockAudioPlayer extends StatelessWidget {
   const MockAudioPlayer({
     super.key,
     required this.title,
+    this.duration = const Duration(seconds: 192),
     this.mediaUrl,
     this.onDownload,
   });
 
   final String title;
+  final Duration duration;
   final String? mediaUrl;
   final VoidCallback? onDownload;
 
@@ -180,6 +200,7 @@ class MockAudioPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return MockMediaPlayer(
       title: title,
+      duration: duration,
       mediaUrl: mediaUrl,
       onDownload: onDownload,
     );
@@ -190,12 +211,14 @@ class MockVideoPlayer extends StatelessWidget {
   const MockVideoPlayer({
     super.key,
     required this.title,
+    this.duration = const Duration(seconds: 192),
     this.mediaUrl,
     this.aspectRatio = 16 / 9,
     this.onDownload,
   });
 
   final String title;
+  final Duration duration;
   final String? mediaUrl;
   final double aspectRatio;
   final VoidCallback? onDownload;
@@ -204,6 +227,7 @@ class MockVideoPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return MockMediaPlayer(
       title: title,
+      duration: duration,
       mediaUrl: mediaUrl,
       isVideo: true,
       showPreviewBox: true,

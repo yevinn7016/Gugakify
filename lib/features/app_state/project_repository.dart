@@ -25,7 +25,9 @@ class ProjectRepository {
 
   Future<void> saveRecentProjects(List<RecentProject> projects) async {
     final prefs = await SharedPreferences.getInstance();
-    final encoded = jsonEncode(projects.map((project) => project.toJson()).toList());
+    final encoded = jsonEncode(
+      projects.map((project) => project.toJson()).toList(),
+    );
     await prefs.setString(_recentProjectsKey, encoded);
   }
 }

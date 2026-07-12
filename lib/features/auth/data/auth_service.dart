@@ -3,11 +3,13 @@ class MockUser {
     required this.userId,
     required this.email,
     required this.nickname,
+    this.isGuest = false,
   });
 
   final String userId;
   final String email;
   final String nickname;
+  final bool isGuest;
 }
 
 class AuthService {
@@ -24,8 +26,9 @@ class AuthService {
     await Future<void>.delayed(const Duration(milliseconds: 160));
     return const MockUser(
       userId: 'guest_001',
-      email: 'guest@gugakify.local',
-      nickname: 'user_001',
+      email: '',
+      nickname: '비회원',
+      isGuest: true,
     );
   }
 }

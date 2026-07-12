@@ -21,12 +21,14 @@ class OptionChipButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
         decoration: BoxDecoration(
-          color: selected ? AppColors.lightPurple : Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: selected ? AppColors.lightPurple : AppColors.cardGray,
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: selected ? AppColors.primaryPurple : AppColors.disabledGray,
+            color: selected
+                ? AppColors.primaryPurple.withValues(alpha: 0.5)
+                : Colors.transparent,
           ),
         ),
         child: Text(

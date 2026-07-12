@@ -34,24 +34,34 @@ class _HanjiPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final fiberPaint = Paint()
-      ..color = Colors.black.withValues(alpha: opacity)
-      ..strokeWidth = 0.6;
-    final dotPaint = Paint()..color = Colors.black.withValues(alpha: opacity * 0.9);
+      ..color = const Color(0xFF4D3B27).withValues(alpha: opacity)
+      ..strokeWidth = 0.45;
+    final paleFiberPaint = Paint()
+      ..color = Colors.white.withValues(alpha: opacity * 1.4)
+      ..strokeWidth = 0.5;
+    final dotPaint = Paint()
+      ..color = const Color(0xFF4D3B27).withValues(alpha: opacity * 0.75);
     final random = Random(11);
-    for (var i = 0; i < 52; i++) {
+    for (var i = 0; i < 46; i++) {
       final y = random.nextDouble() * size.height;
       final x = random.nextDouble() * size.width;
       final length = 18 + random.nextDouble() * 58;
       canvas.drawLine(
         Offset(x, y),
-        Offset((x + length).clamp(0, size.width), y + random.nextDouble() * 8 - 4),
-        fiberPaint,
+        Offset(
+          (x + length).clamp(0, size.width),
+          y + random.nextDouble() * 8 - 4,
+        ),
+        i.isEven ? fiberPaint : paleFiberPaint,
       );
     }
-    for (var i = 0; i < 95; i++) {
+    for (var i = 0; i < 80; i++) {
       canvas.drawCircle(
-        Offset(random.nextDouble() * size.width, random.nextDouble() * size.height),
-        0.5 + random.nextDouble() * 1.1,
+        Offset(
+          random.nextDouble() * size.width,
+          random.nextDouble() * size.height,
+        ),
+        0.35 + random.nextDouble() * 0.85,
         dotPaint,
       );
     }
