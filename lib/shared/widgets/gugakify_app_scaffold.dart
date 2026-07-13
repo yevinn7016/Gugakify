@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
 import 'hanji_background.dart';
 import 'mobile_shell.dart';
 
@@ -7,7 +8,7 @@ class GugakifyAppScaffold extends StatelessWidget {
   const GugakifyAppScaffold({
     super.key,
     required this.child,
-    this.backgroundColor = const Color(0xFFFFFDF8),
+    this.backgroundColor = AppColors.backgroundAlt,
     this.padding = const EdgeInsets.symmetric(horizontal: 22),
   });
 

@@ -16,46 +16,58 @@ class FlowActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final enabled = onPressed != null;
     return SizedBox(
-      height: 56,
+      height: primary ? 56 : 52,
       child: primary
-          ? ElevatedButton(
-              onPressed: onPressed,
-              style: ElevatedButton.styleFrom(
-                elevation: onPressed == null ? 0 : 1,
-                backgroundColor: onPressed == null
-                    ? AppColors.disabledGray
-                    : AppColors.lightPurple,
-                foregroundColor: onPressed == null
-                    ? AppColors.textGray
-                    : AppColors.primaryPurple,
-                shadowColor: AppColors.primaryPurple.withValues(alpha: 0.12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
+          ? DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                gradient: enabled
+                    ? const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [AppColors.lightPurple, AppColors.softPurple],
+                      )
+                    : null,
+                color: enabled ? null : AppColors.disabledGray,
               ),
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
+              child: ElevatedButton(
+                onPressed: onPressed,
+                style: ElevatedButton.styleFrom(
+                  elevation: enabled ? 1 : 0,
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: enabled
+                      ? AppColors.deepInkPurple
+                      : AppColors.textGray,
+                  shadowColor: AppColors.primaryPurple.withValues(alpha: 0.12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                ),
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             )
           : OutlinedButton(
               onPressed: onPressed,
               style: OutlinedButton.styleFrom(
-                foregroundColor: onPressed == null
-                    ? AppColors.textGray
-                    : AppColors.primaryPurple,
-                backgroundColor: onPressed == null
-                    ? AppColors.disabledGray
-                    : Colors.white.withValues(alpha: 0.9),
+                foregroundColor: enabled
+                    ? AppColors.primaryPurple
+                    : AppColors.textGray,
+                backgroundColor: enabled
+                    ? Colors.white.withValues(alpha: 0.9)
+                    : AppColors.disabledGray,
                 side: BorderSide(
-                  color: onPressed == null
-                      ? AppColors.disabledGray
-                      : AppColors.primaryPurple.withValues(alpha: 0.4),
+                  color: enabled
+                      ? AppColors.lightPurple
+                      : AppColors.disabledGray,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -66,7 +78,7 @@ class FlowActionButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
