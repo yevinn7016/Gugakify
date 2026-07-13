@@ -18,44 +18,65 @@ class PrimaryLavenderButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final enabled = onPressed != null;
     return SizedBox(
-      height: 54,
+      height: 56,
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ButtonStyle(
-          elevation: WidgetStateProperty.resolveWith(
-            (states) => states.contains(WidgetState.pressed) ? 0 : 1,
-          ),
-          backgroundColor: WidgetStateProperty.all(
-            enabled ? AppColors.lightPurple : AppColors.disabledGray,
-          ),
-          foregroundColor: WidgetStateProperty.all(
-            enabled ? AppColors.primaryPurple : AppColors.textGray,
-          ),
-          shadowColor: WidgetStateProperty.all(
-            AppColors.primaryPurple.withValues(alpha: 0.12),
-          ),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          gradient: enabled
+              ? const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [AppColors.lightPurple, AppColors.softPurple],
+                )
+              : null,
+          color: enabled ? null : AppColors.disabledGray,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[icon!, const SizedBox(width: 8)],
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ButtonStyle(
+            elevation: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.pressed) ? 0 : 1,
             ),
-          ],
+            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+            foregroundColor: WidgetStateProperty.all(
+              enabled ? AppColors.deepInkPurple : AppColors.textGray,
+            ),
+            shadowColor: WidgetStateProperty.all(
+              AppColors.primaryPurple.withValues(alpha: 0.12),
+            ),
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            ),
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final labelMaxWidth =
+                  (constraints.maxWidth - (icon == null ? 0 : 28)).clamp(
+                    0.0,
+                    constraints.maxWidth,
+                  );
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  if (icon != null) ...[icon!, const SizedBox(width: 8)],
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: labelMaxWidth),
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -97,23 +118,33 @@ class SecondaryOutlineButton extends StatelessWidget {
               ? AppColors.disabledGray
               : AppColors.white,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[icon!, const SizedBox(width: 8)],
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final labelMaxWidth =
+                (constraints.maxWidth - (icon == null ? 0 : 28)).clamp(
+                  0.0,
+                  constraints.maxWidth,
+                );
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                if (icon != null) ...[icon!, const SizedBox(width: 8)],
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: labelMaxWidth),
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
       ),
     );

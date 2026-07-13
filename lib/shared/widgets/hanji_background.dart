@@ -2,11 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
+
 class HanjiBackground extends StatelessWidget {
   const HanjiBackground({
     super.key,
     required this.child,
-    this.baseColor = const Color(0xFFFFFCF7),
+    this.baseColor = AppColors.background,
     this.opacity = 0.035,
   });
 
