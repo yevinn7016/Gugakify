@@ -1,58 +1,40 @@
 import os
-from pathlib import Path
 
 from app.models.base import ModelAdapter
-from app.models.cyclegan import CycleGanStyleTransferAdapter
-from app.models.dcgan import DcGanImageGeneratorAdapter
-from app.models.opencv_ink import OpenCVInkWashAdapter
-from app.models.opencv_minhwa import OpenCVMinhwaAdapter
-from app.models.openai_image import OpenAIImageStyleTransferAdapter
 
 _ADAPTER_CACHE: dict[str, ModelAdapter] = {}
 
 
 def create_model_adapter(adapter_name: str | None = None) -> ModelAdapter:
-    selected = (adapter_name or os.getenv("MODEL_ADAPTER") or "cyclegan").lower()
+    selected = (adapter_name or os.getenv("MODEL_ADAPTER") or "auto").lower()
+    if selected == "auto":
+        selected = "opencv_ink"
+
     if selected in _ADAPTER_CACHE:
         return _ADAPTER_CACHE[selected]
 
-    if selected == "cyclegan":
-        checkpoint = _optional_path("CYCLEGAN_CHECKPOINT_PATH")
-        adapter = CycleGanStyleTransferAdapter(checkpoint_path=checkpoint)
-        _ADAPTER_CACHE[selected] = adapter
-        return adapter
-
-    if selected == "dcgan":
-        checkpoint = _optional_path("DCGAN_CHECKPOINT_PATH")
-        adapter = DcGanImageGeneratorAdapter(checkpoint_path=checkpoint)
-        _ADAPTER_CACHE[selected] = adapter
-        return adapter
-
-    if selected in {"openai", "openai_image", "openai-image"}:
-        adapter = OpenAIImageStyleTransferAdapter()
-        _ADAPTER_CACHE[selected] = adapter
-        return adapter
-
-    if selected in {"hf_sumukhwa", "huggingface_sumukhwa", "sumukhwa"}:
+    if selected in {"opencv_ink", "opencv-ink", "ink_wash", "ink-wash", "sumukhwa"}:
         try:
-            from app.models.hf_sumukhwa import HuggingFaceSumukhwaImg2ImgAdapter
+            from app.models.opencv_ink import OpenCVInkWashAdapter
         except ModuleNotFoundError as exc:
             raise RuntimeError(
-                "The Hugging Face adapter file app/models/hf_sumukhwa.py is missing. "
-                "Use MODEL_ADAPTER=auto/opencv_ink/opencv_minhwa for Render OpenCV deployment, "
-                "or commit hf_sumukhwa.py if you want to use MODEL_ADAPTER=hf_sumukhwa."
+                "The Sumukhwa adapter file app/models/opencv_ink.py is missing. "
+                "Commit this file before deploying MODEL_ADAPTER=auto or styleType=sumukhwa."
             ) from exc
 
-        adapter = HuggingFaceSumukhwaImg2ImgAdapter()
-        _ADAPTER_CACHE[selected] = adapter
-        return adapter
-
-    if selected in {"opencv_ink", "opencv-ink", "ink_wash", "ink-wash"}:
         adapter = OpenCVInkWashAdapter()
         _ADAPTER_CACHE[selected] = adapter
         return adapter
 
     if selected in {"opencv_minhwa", "opencv-minhwa", "minhwa"}:
+        try:
+            from app.models.opencv_minhwa import OpenCVMinhwaAdapter
+        except ModuleNotFoundError as exc:
+            raise RuntimeError(
+                "The Minhwa adapter file app/models/opencv_minhwa.py is missing. "
+                "Commit this file before deploying MODEL_ADAPTER=auto or styleType=minhwa."
+            ) from exc
+
         adapter = OpenCVMinhwaAdapter()
         _ADAPTER_CACHE[selected] = adapter
         return adapter
@@ -66,8 +48,3 @@ def preload_model_adapter(adapter_name: str | None = None) -> ModelAdapter:
     if callable(load):
         load()
     return adapter
-
-
-def _optional_path(env_name: str) -> Path | None:
-    value = os.getenv(env_name)
-    return Path(value) if value else None

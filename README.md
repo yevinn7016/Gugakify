@@ -31,12 +31,8 @@ app/
   store.py                In-memory job store for the current prototype
   models/
     base.py               Shared model adapter protocol
-    cyclegan.py           AI Hub CycleGAN placeholder adapter
-    dcgan.py              AI Hub DCGAN placeholder adapter
-    hf_sumukhwa.py        Hugging Face Stable Diffusion img2img adapter
     opencv_ink.py         OpenCV Sumukhwa adapter
     opencv_minhwa.py      OpenCV Minhwa adapter
-    openai_image.py       Optional OpenAI image adapter
     registry.py           Adapter selection
   services/
     download.py           Direct video / YouTube download
@@ -170,7 +166,6 @@ Use a fixed adapter only when testing:
 ```env
 MODEL_ADAPTER=opencv_ink
 MODEL_ADAPTER=opencv_minhwa
-MODEL_ADAPTER=hf_sumukhwa
 ```
 
 ## Sumukhwa Settings
@@ -215,27 +210,6 @@ OPENCV_MINHWA_TEMPORAL_BLEND=0.00
 ```
 
 This style tones down the background toward hanji and emphasizes folk-painting colors on people and objects.
-
-## Hugging Face Adapter
-
-The Hugging Face adapter is optional and much slower on CPU. It can be used for experimental full-frame image-to-image conversion.
-
-```env
-MODEL_ADAPTER=hf_sumukhwa
-HF_SUMUKHWA_MODEL_ID=gagong/korean-sumukhwa-model-ver-1
-HF_SUMUKHWA_PROMPT=Korean sumukhwa style, traditional artistic drawing, ink painting, subtle details
-HF_SUMUKHWA_NEGATIVE_PROMPT=blurry, low quality, bad anatomy, vibrant colors, photorealistic, cartoon
-HF_SUMUKHWA_STRENGTH=0.65
-HF_SUMUKHWA_GUIDANCE_SCALE=8.5
-HF_SUMUKHWA_STEPS=4
-HF_SUMUKHWA_DEVICE=cpu
-HF_SUMUKHWA_DTYPE=float32
-HF_SUMUKHWA_MAX_SIZE=512
-HF_SUMUKHWA_KEYFRAME_ONLY=false
-HF_SUMUKHWA_NON_KEYFRAME_BLEND=0.8
-```
-
-When `HF_SUMUKHWA_KEYFRAME_ONLY=false`, every extracted frame runs through the model. This avoids style breaks between keyframes, but CPU processing can take a long time.
 
 ## Preview Images
 
