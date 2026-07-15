@@ -6,8 +6,7 @@ from pydantic import BaseModel, Field, HttpUrl, field_validator
 
 class StyleType(StrEnum):
     SUMUKHWA = "sumukhwa"
-    CHAESAEKHWA = "chaesaekhwa"
-    SUMUKH_DAMCHAE = "sumukh_damchae"
+    MINHWA = "minhwa"
 
 
 class JobStatus(StrEnum):
@@ -53,6 +52,8 @@ class JobStatusResponse(BaseModel):
     status: JobStatus
     progress: int = Field(..., ge=0, le=100)
     currentStep: CurrentStep
+    processingTimeSeconds: Optional[float] = None
+    styleTransferTimeSeconds: Optional[float] = None
     errorMessage: Optional[str] = None
 
 
@@ -63,3 +64,5 @@ class JobResultResponse(BaseModel):
     thumbnailUrl: str
     duration: float
     outputFileSize: int
+    processingTimeSeconds: Optional[float] = None
+    styleTransferTimeSeconds: Optional[float] = None

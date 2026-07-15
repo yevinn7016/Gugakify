@@ -1,15 +1,52 @@
-.venv/
-venv/
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.pytest_cache/
-.mypy_cache/
-.ipynb_checkpoints/
+# Local environment
 .env
 .env.*
-outputs/
+!.env.example
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Runtime artifacts
 work/
-.agents/
-.codex/
+outputs/
+logs/
+*.log
+
+# Local media inputs/outputs
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.mp3
+*.wav
+*.aac
+*.flac
+test*.png
+test*.jpg
+test*.jpeg
+test*.webp
+
+# Model checkpoints and downloaded model weights
+models/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.bin
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -14,6 +14,7 @@ class FrameTransformContext:
     is_keyframe: bool
     previous_keyframe_path: Path | None = None
     previous_styled_keyframe_path: Path | None = None
+    previous_styled_frame_path: Path | None = None
 
 
 @dataclass(frozen=True)

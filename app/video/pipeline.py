@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 import shutil
+from time import perf_counter
 
 import numpy as np
 
@@ -17,6 +18,7 @@ class PipelineResult:
     metadata: VideoMetadata
     output_file_size: int
     shot_count: int
+    style_transfer_time_seconds: float
 
 
 class VideoConversionPipeline:
@@ -41,6 +43,7 @@ class VideoConversionPipeline:
         shots = detect_shots(frame_paths)
         audio = extract_audio(input_video_path, audio_path) if preserve_audio else None
 
+        style_started_at = perf_counter()
         styled_paths = self._style_frames(
             job_id=job_id,
             frame_paths=frame_paths,
@@ -48,6 +51,7 @@ class VideoConversionPipeline:
             styled_dir=styled_dir,
             style_type=style_type,
         )
+        style_transfer_time_seconds = perf_counter() - style_started_at
 
         silent_video = output_dir / f"{job_id}_silent.mp4"
         merged_video = output_dir / f"{job_id}_output.mp4"
@@ -65,6 +69,7 @@ class VideoConversionPipeline:
             metadata=metadata,
             output_file_size=final_video.stat().st_size if final_video.exists() else 0,
             shot_count=len(shots),
+            style_transfer_time_seconds=style_transfer_time_seconds,
         )
 
     def _style_frames(
@@ -85,6 +90,10 @@ class VideoConversionPipeline:
         shot_by_frame = _index_shots(shots)
         previous_keyframe_path: Path | None = None
         previous_styled_keyframe_path: Path | None = None
+        previous_styled_frame_path: Path | None = None
+        previous_styled_keyframe = None
+        keyframe_only = bool(getattr(self.model_adapter, "transform_keyframes_only", False))
+        non_keyframe_blend = float(getattr(self.model_adapter, "non_keyframe_blend", 0.55))
 
         for frame_index, frame_path in enumerate(frame_paths):
             shot = shot_by_frame.get(frame_index, shots[-1] if shots else None)
@@ -101,17 +110,23 @@ class VideoConversionPipeline:
                 is_keyframe=is_keyframe,
                 previous_keyframe_path=previous_keyframe_path,
                 previous_styled_keyframe_path=previous_styled_keyframe_path,
+                previous_styled_frame_path=previous_styled_frame_path,
             )
-            styled = self.model_adapter.transform_frame(frame, context)
+            if keyframe_only and not is_keyframe and previous_styled_keyframe is not None:
+                styled = _blend_with_keyframe_style(frame, previous_styled_keyframe, non_keyframe_blend)
+            else:
+                styled = self.model_adapter.transform_frame(frame, context)
             styled = _match_resolution(styled, frame)
 
             output_path = styled_dir / frame_path.name
             cv2.imwrite(str(output_path), styled)
             styled_paths.append(output_path)
+            previous_styled_frame_path = output_path
 
             if is_keyframe:
                 previous_keyframe_path = frame_path
                 previous_styled_keyframe_path = output_path
+                previous_styled_keyframe = styled
 
         return styled_paths
 
@@ -132,3 +147,11 @@ def _match_resolution(styled: np.ndarray, original: np.ndarray) -> np.ndarray:
 
     height, width = original.shape[:2]
     return cv2.resize(styled, (width, height), interpolation=cv2.INTER_AREA)
+
+
+def _blend_with_keyframe_style(frame: np.ndarray, styled_keyframe: np.ndarray, alpha: float) -> np.ndarray:
+    import cv2
+
+    styled = _match_resolution(styled_keyframe, frame)
+    alpha = max(0.0, min(1.0, alpha))
+    return cv2.addWeighted(styled, alpha, frame, 1.0 - alpha, 0)

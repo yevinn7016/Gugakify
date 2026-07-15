@@ -23,6 +23,8 @@ class ConversionJob:
     thumbnail_url: Optional[str] = None
     duration: Optional[float] = None
     output_file_size: Optional[int] = None
+    processing_time_seconds: Optional[float] = None
+    style_transfer_time_seconds: Optional[float] = None
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
