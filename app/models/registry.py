@@ -4,7 +4,6 @@ from pathlib import Path
 from app.models.base import ModelAdapter
 from app.models.cyclegan import CycleGanStyleTransferAdapter
 from app.models.dcgan import DcGanImageGeneratorAdapter
-from app.models.hf_sumukhwa import HuggingFaceSumukhwaImg2ImgAdapter
 from app.models.opencv_ink import OpenCVInkWashAdapter
 from app.models.opencv_minhwa import OpenCVMinhwaAdapter
 from app.models.openai_image import OpenAIImageStyleTransferAdapter
@@ -35,6 +34,15 @@ def create_model_adapter(adapter_name: str | None = None) -> ModelAdapter:
         return adapter
 
     if selected in {"hf_sumukhwa", "huggingface_sumukhwa", "sumukhwa"}:
+        try:
+            from app.models.hf_sumukhwa import HuggingFaceSumukhwaImg2ImgAdapter
+        except ModuleNotFoundError as exc:
+            raise RuntimeError(
+                "The Hugging Face adapter file app/models/hf_sumukhwa.py is missing. "
+                "Use MODEL_ADAPTER=auto/opencv_ink/opencv_minhwa for Render OpenCV deployment, "
+                "or commit hf_sumukhwa.py if you want to use MODEL_ADAPTER=hf_sumukhwa."
+            ) from exc
+
         adapter = HuggingFaceSumukhwaImg2ImgAdapter()
         _ADAPTER_CACHE[selected] = adapter
         return adapter
