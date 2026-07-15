@@ -275,6 +275,7 @@ Render settings:
 Build Command: pip install -r requirements.txt
 Start Command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
 Health Check Path: /health
+Python Version: 3.12.8
 ```
 
 Set environment variables in the Render dashboard. Do not upload a real `.env`.
@@ -285,6 +286,7 @@ For Render, make sure these are set:
 ENABLE_REAL_PIPELINE=true
 MODEL_ADAPTER=auto
 MAX_INPUT_VIDEO_MB=200
+PYTHON_VERSION=3.12.8
 ```
 
 If output files must be publicly persistent, connect external storage. Render local disk is not intended as permanent storage.
