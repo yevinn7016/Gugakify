@@ -80,7 +80,7 @@ curl http://localhost:8000/api/v1/model-adapters
 
 ## API
 
-### Create Conversion Job
+### Create Conversion Job From URL
 
 `POST /api/v1/mv-conversions`
 
@@ -105,6 +105,45 @@ Response:
   "jobId": "job_xxxxxxxxxxxx",
   "status": "queued",
   "message": "Video conversion job has been created."
+}
+```
+
+### Create Conversion Job From File
+
+`POST /api/v1/mv-conversions/upload`
+
+Use this endpoint when the backend downloads the source MV first and sends the video file directly to the AI server.
+
+Content type: `multipart/form-data`
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `file` | file | Yes | Source video file. Supports `mp4`, `mov`, `m4v`, `webm`. |
+| `userId` | string | Yes | User identifier. |
+| `projectId` | string | Yes | Project identifier. |
+| `styleType` | string | Yes | `sumukhwa` or `minhwa`. |
+| `preserveAudio` | boolean | No | Whether to keep the original audio. Default: `true`. |
+| `callbackUrl` | string | No | Backend callback URL. Empty value is treated as no callback. |
+| `originalFileName` | string | No | Original file name for tracking. |
+
+Example:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/mv-conversions/upload \
+  -F "file=@input.mp4" \
+  -F "userId=user_001" \
+  -F "projectId=project_001" \
+  -F "styleType=sumukhwa" \
+  -F "preserveAudio=true"
+```
+
+Response:
+
+```json
+{
+  "jobId": "job_xxxxxxxxxxxx",
+  "status": "queued",
+  "message": "Uploaded video conversion job has been created."
 }
 ```
 

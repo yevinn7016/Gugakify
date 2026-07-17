@@ -7,7 +7,7 @@ from uuid import uuid4
 
 import httpx
 from dotenv import load_dotenv
-from fastapi import BackgroundTasks, FastAPI, HTTPException, status
+from fastapi import BackgroundTasks, FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
@@ -20,6 +20,7 @@ from app.schemas import (
     JobResultResponse,
     JobStatus,
     JobStatusResponse,
+    StyleType,
 )
 from app.services.download import download_video
 from app.store import ConversionJob, job_store
@@ -61,7 +62,7 @@ def get_model_adapter_info() -> dict[str, str | None]:
     return {
         "activeAdapter": adapter.name,
         "checkpointPath": str(checkpoint_path) if checkpoint_path else None,
-        "role": "CycleGAN transforms MV frames; DCGAN generates style references.",
+        "role": "OpenCV adapters convert MV frames to sumukhwa or minhwa styles.",
         "loaded": str(loaded) if loaded is not None else None,
     }
 
@@ -112,6 +113,64 @@ def create_conversion_job(
         jobId=job_id,
         status=JobStatus.QUEUED,
         message="Video conversion job has been created.",
+    )
+
+
+@app.post(
+    "/api/v1/mv-conversions/upload",
+    response_model=JobCreateResponse,
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def create_conversion_upload_job(
+    background_tasks: BackgroundTasks,
+    userId: str = Form(...),
+    projectId: str = Form(...),
+    styleType: str = Form(...),
+    preserveAudio: bool = Form(True),
+    callbackUrl: str | None = Form(None),
+    originalFileName: str | None = Form(None),
+    file: UploadFile = File(...),
+) -> JobCreateResponse:
+    if not userId.strip():
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="userId is required.")
+    if not projectId.strip():
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="projectId is required.")
+
+    normalized_style = styleType.strip().lower()
+    if normalized_style not in {"sumukhwa", "minhwa"}:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="styleType must be either 'sumukhwa' or 'minhwa'.",
+        )
+
+    job_id = f"job_{uuid4().hex[:12]}"
+    upload_dir = _work_dir() / job_id / "upload"
+    input_path = await _save_upload_file(file, upload_dir, _max_input_video_bytes())
+    callback_url = callbackUrl.strip() if callbackUrl and callbackUrl.strip() else None
+    source_name = originalFileName.strip() if originalFileName and originalFileName.strip() else input_path.name
+
+    job = ConversionJob(
+        job_id=job_id,
+        user_id=userId,
+        project_id=projectId,
+        input_video_url="",
+        original_file_name=source_name,
+        style_type=StyleType(normalized_style),
+        preserve_audio=preserveAudio,
+        callback_url=callback_url,
+        input_file_path=str(input_path),
+        input_source_type="file",
+    )
+    job_store.create(job)
+    if _real_pipeline_enabled():
+        background_tasks.add_task(run_real_conversion_pipeline, job_id)
+    else:
+        background_tasks.add_task(run_conversion_pipeline_placeholder, job_id)
+
+    return JobCreateResponse(
+        jobId=job_id,
+        status=JobStatus.QUEUED,
+        message="Uploaded video conversion job has been created.",
     )
 
 
@@ -216,12 +275,17 @@ async def run_real_conversion_pipeline(job_id: str) -> None:
             progress=5,
         )
         job_dir = _work_dir() / job_id
-        input_path = await download_video(
-            url=job.input_video_url,
-            original_file_name=job.original_file_name,
-            output_dir=job_dir,
-            max_bytes=_max_input_video_bytes(),
-        )
+        if job.input_file_path:
+            input_path = Path(job.input_file_path)
+            if not input_path.exists():
+                raise FileNotFoundError(f"Uploaded input video was not found: {input_path}")
+        else:
+            input_path = await download_video(
+                url=job.input_video_url,
+                original_file_name=job.original_file_name,
+                output_dir=job_dir,
+                max_bytes=_max_input_video_bytes(),
+            )
 
         job_store.update(job_id, current_step=CurrentStep.STYLE_TRANSFER, progress=35)
         pipeline = VideoConversionPipeline(create_model_adapter(_adapter_name_for_style(job.style_type)))
@@ -311,6 +375,38 @@ def _output_dir() -> Path:
 def _max_input_video_bytes() -> int:
     megabytes = int(os.getenv("MAX_INPUT_VIDEO_MB", "200"))
     return megabytes * 1024 * 1024
+
+
+async def _save_upload_file(upload_file: UploadFile, output_dir: Path, max_bytes: int) -> Path:
+    file_name = Path(upload_file.filename or "input.mp4").name
+    suffix = Path(file_name).suffix.lower() or ".mp4"
+    if suffix not in {".mp4", ".mov", ".m4v", ".webm"}:
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="Only mp4, mov, m4v, and webm video files are supported.",
+        )
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    target_path = output_dir / f"input{suffix}"
+    total_bytes = 0
+    try:
+        with target_path.open("wb") as buffer:
+            while chunk := await upload_file.read(1024 * 1024):
+                total_bytes += len(chunk)
+                if total_bytes > max_bytes:
+                    target_path.unlink(missing_ok=True)
+                    raise HTTPException(
+                        status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                        detail="Uploaded video exceeds MAX_INPUT_VIDEO_MB.",
+                    )
+                buffer.write(chunk)
+    finally:
+        await upload_file.close()
+
+    if total_bytes == 0:
+        target_path.unlink(missing_ok=True)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Uploaded video file is empty.")
+    return target_path
 
 
 def _public_output_url(path: Path, public_base_url: str) -> str:

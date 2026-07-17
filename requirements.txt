@@ -6,3 +6,4 @@ numpy==2.2.1
 opencv-python-headless==4.10.0.84
 yt-dlp==2025.12.8
 python-dotenv==1.2.2
+python-multipart==0.0.20

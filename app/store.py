@@ -15,6 +15,8 @@ class ConversionJob:
     style_type: StyleType
     preserve_audio: bool
     callback_url: Optional[str]
+    input_file_path: Optional[str] = None
+    input_source_type: str = "url"
     status: JobStatus = JobStatus.QUEUED
     progress: int = 0
     current_step: CurrentStep = CurrentStep.UPLOAD
