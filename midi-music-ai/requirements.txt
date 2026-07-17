@@ -1,3 +1,4 @@
+setuptools<82
 basic-pitch
 demucs
 fastapi

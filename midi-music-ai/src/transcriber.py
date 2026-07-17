@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from basic_pitch import ICASSP_2022_MODEL_PATH
-from basic_pitch.inference import predict_and_save
-
 
 def transcribe_audio(audio_path: Path, output_midi: Path) -> Path:
+    # BasicPitch는 실제 채보를 시작할 때 로드한다. 모델 런타임에 문제가
+    # 있더라도 API 서버와 /health 엔드포인트는 정상적으로 기동할 수 있다.
+    from basic_pitch import ICASSP_2022_MODEL_PATH
+    from basic_pitch.inference import predict_and_save
+
     audio_path = audio_path.resolve()
     output_midi = output_midi.resolve()
 
@@ -38,4 +40,3 @@ def transcribe_audio(audio_path: Path, output_midi: Path) -> Path:
     output_midi.parent.mkdir(parents=True, exist_ok=True)
     generated_midis[0].replace(output_midi)
     return output_midi
-
