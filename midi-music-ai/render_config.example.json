@@ -1,0 +1,30 @@
+{
+  "reaper_executable": "C:\\Program Files\\REAPER (x64)\\reaper.exe",
+  "instruments": {
+    "danso": {
+      "template_project": "C:\\path\\to\\danso_template.rpp",
+      "runtime_midi": "C:\\path\\to\\runtime\\current_danso.mid"
+    },
+    "haegeum": {
+      "template_project": "C:\\path\\to\\haegeum_template.rpp",
+      "runtime_midi": "C:\\path\\to\\runtime\\current_haegeum.mid"
+    },
+    "daegeum": {
+      "template_project": "C:\\path\\to\\daegeum_template.rpp",
+      "runtime_midi": "C:\\path\\to\\runtime\\current_daegeum.mid"
+    },
+    "piri": {
+      "template_project": "C:\\path\\to\\piri_template.rpp",
+      "runtime_midi": "C:\\path\\to\\runtime\\current_piri.mid"
+    },
+    "gayageum": {
+      "template_project": "C:\\path\\to\\gayageum_template.rpp",
+      "runtime_midi": "C:\\path\\to\\runtime\\current_gayageum.mid"
+    },
+    "geomungo": {
+      "template_project": "C:\\path\\to\\geomungo_template.rpp",
+      "runtime_midi": "C:\\path\\to\\runtime\\current_geomungo.mid"
+    }
+  }
+}
+

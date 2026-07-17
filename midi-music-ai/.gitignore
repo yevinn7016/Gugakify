@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.venv/
+outputs/jobs/
+runtime/*.mid
+render_config.json
+

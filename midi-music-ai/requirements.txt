@@ -1,0 +1,9 @@
+basic-pitch
+demucs
+fastapi
+httpx
+numpy
+pretty-midi
+python-multipart
+soundfile
+uvicorn[standard]
