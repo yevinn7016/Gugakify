@@ -312,6 +312,63 @@ def upload_final_result(
         ) from exc
 
 
+@app.post("/results")
+def upload_standalone_result(
+    audio: UploadFile = File(...),
+    vocal_instrument: str = Form(default=""),
+    accompaniment_instrument: str = Form(default=""),
+    _: None = Depends(require_api_key),
+) -> Dict[str, Any]:
+    """AI 작업과 연결하지 않고 완성된 WAV를 백엔드로 전달한다."""
+    if Path(audio.filename or "").suffix.lower() != ".wav":
+        raise HTTPException(status_code=400, detail="WAV 파일만 업로드할 수 있습니다.")
+
+    for instrument in (vocal_instrument, accompaniment_instrument):
+        if instrument:
+            try:
+                get_instrument_profile(instrument)
+            except ValueError as exc:
+                raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    delivery_id = str(uuid.uuid4())
+    job_dir = OUTPUT_ROOT / "jobs" / delivery_id
+    job_dir.mkdir(parents=True, exist_ok=False)
+    result_path = job_dir / "result.wav"
+    temporary_path = job_dir / ".result.uploading.wav"
+
+    with temporary_path.open("wb") as output_file:
+        shutil.copyfileobj(audio.file, output_file)
+
+    try:
+        _validate_wav(temporary_path)
+    except ValueError as exc:
+        temporary_path.unlink(missing_ok=True)
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    temporary_path.replace(result_path)
+    write_status(
+        job_dir,
+        "result_uploaded",
+        delivery_id=delivery_id,
+        job_type="standalone_result",
+        vocal_instrument=vocal_instrument,
+        accompaniment_instrument=accompaniment_instrument,
+        result_wav=str(result_path),
+        uploaded_filename=Path(audio.filename or "result.wav").name,
+    )
+
+    try:
+        return deliver_result_to_backend(job_dir)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "최종 WAV는 저장했지만 백엔드 전달에 실패했습니다: "
+                f"{exc}"
+            ),
+        ) from exc
+
+
 @app.post("/jobs/{job_id}/deliver")
 def retry_backend_delivery(
     job_id: str,
@@ -325,4 +382,3 @@ def retry_backend_delivery(
             status_code=502,
             detail=f"백엔드 전달에 실패했습니다: {exc}",
         ) from exc
-

@@ -100,6 +100,20 @@ curl.exe -X POST "http://localhost:8000/jobs/JOB_ID/result" `
   -F "audio=@C:\rendered\result.wav;type=audio/wav"
 ```
 
+AI 작업과 연결하지 않고 완성된 WAV만 바로 전달하려면 `POST /results`를
+사용합니다. 악기 정보는 선택 사항입니다.
+
+```powershell
+curl.exe -X POST "http://localhost:8000/results" `
+  -H "X-API-Key: YOUR_KEY" `
+  -F "audio=@C:\rendered\result.wav;type=audio/wav" `
+  -F "vocal_instrument=haegeum" `
+  -F "accompaniment_instrument=gayageum"
+```
+
+이 요청은 새로운 `delivery_id`를 자동 발급하므로 기존 `job_id`가 필요하지
+않습니다.
+
 `BACKEND_RESULT_URL`이 설정되어 있으면 API가 최종 WAV를 해당 백엔드 주소로
 즉시 전달합니다. 전달 실패 시 파일을 보존하고 상태를 `delivery_failed`로
 기록합니다. 다음 요청으로 전송만 재시도할 수 있습니다.
