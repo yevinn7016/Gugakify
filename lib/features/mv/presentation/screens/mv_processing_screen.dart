@@ -19,13 +19,12 @@ class MvProcessingScreen extends StatefulWidget {
 class _MvProcessingScreenState extends State<MvProcessingScreen> {
   Timer? _timer;
   final _steps = const [
-    'BPM·비트·에너지 분석',
-    '곡 구간 분할',
-    '장단 및 분위기 매핑',
-    'Scene Script 생성',
-    '전통 이미지 생성',
-    '장단 기반 효과 타임라인 생성',
+    '입력 영상 준비',
+    '프레임 추출',
+    '전통 화풍 변환',
+    '프레임 연속성 보정',
     '영상 합성',
+    '오디오 병합',
     '완료',
   ];
 
@@ -182,7 +181,7 @@ class _MvProcessingHeader extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         const Text(
-          '전통 MV 생성 중',
+          '전통 화풍 변환 중',
           style: TextStyle(
             color: AppColors.textBlack,
             fontSize: 22,
@@ -308,7 +307,7 @@ class _MvProcessingCard extends StatelessWidget {
               _PulseIcon(progress: progress),
               const SizedBox(height: 20),
               const Text(
-                'AI가 전통 MV를\n생성하고 있어요',
+                'AI가 입력 영상을\n전통 화풍으로 변환하고 있어요',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.textBlack,
@@ -319,7 +318,7 @@ class _MvProcessingCard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Text(
-                '음악의 장단과 분위기를 분석해 수묵화와 전통 색감이 살아있는 영상으로 재구성하는 중입니다.',
+                'OpenCV 기반으로 각 프레임을 선택한 전통 화풍으로 변환하고 원본 오디오와 합치는 중입니다.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.textMuted,
@@ -830,7 +829,7 @@ class _WaitingGuideCard extends StatelessWidget {
           SizedBox(
             width: 258,
             child: Text(
-              '생성이 완료되면 자동으로 최종 결과 화면으로 이동합니다. 음악의 장단에 맞춰 전통 이미지와 효과 타임라인을 구성하고 있어요.',
+              '영상은 프레임 단위로 변환되므로 처리 시간이 오래 걸릴 수 있어요.',
               style: TextStyle(
                 color: AppColors.textMuted,
                 fontSize: 12,
@@ -848,14 +847,8 @@ String _visualStyleLabel(String? value) {
   switch (value) {
     case 'sumukhwa':
       return '수묵화';
-    case 'chaesaekhwa':
-      return '채색화';
-    case 'sumukh_damchae':
-      return '수묵담채화';
-    case 'palace_painting':
-      return '궁중채색화';
-    case 'landscape':
-      return '산수화';
+    case 'minhwa':
+      return '민화';
     case null:
       return '선택 전';
     default:
