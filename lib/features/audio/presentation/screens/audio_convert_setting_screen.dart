@@ -592,15 +592,19 @@ class _SelectionSummaryCard extends StatelessWidget {
         ? '선택 전'
         : _instrumentOptions[project.accompanimentInstrument] ??
               project.accompanimentInstrument!;
+    final isUrl = project.inputSourceType == 'url';
 
     return _SectionCard(
       title: '선택 요약',
       caption: '현재 선택한 국악 변환 설정입니다',
       child: Column(
         children: [
+          _SummaryRow(label: '입력 방식', value: isUrl ? 'URL 입력' : '파일 업로드'),
           _SummaryRow(
-            label: '입력 파일',
-            value: project.inputAudioFileName ?? '선택 전',
+            label: isUrl ? '입력 URL' : '입력 파일',
+            value: isUrl
+                ? project.youtubeUrl
+                : (project.inputAudioFileName ?? '선택 전'),
           ),
           _SummaryRow(
             label: '보컬 악기',
