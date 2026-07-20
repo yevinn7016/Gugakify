@@ -18,6 +18,7 @@ class UploadScreen extends StatefulWidget {
 
 class _UploadScreenState extends State<UploadScreen> {
   late final TextEditingController _nameController;
+  late final TextEditingController _urlController;
   bool _copyrightChecked = false;
   String? _selectedFileName;
   String? _selectedFileExtension;
@@ -29,6 +30,7 @@ class _UploadScreenState extends State<UploadScreen> {
     super.initState();
     final project = context.read<ProjectProvider>();
     _nameController = TextEditingController(text: project.projectName);
+    _urlController = TextEditingController(text: project.youtubeUrl);
     _copyrightChecked = project.copyrightConfirmed;
     _selectedFileName = project.inputAudioFileName;
     _selectedFileExtension = project.inputAudioFileExtension;
@@ -39,15 +41,19 @@ class _UploadScreenState extends State<UploadScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _urlController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final project = context.watch<ProjectProvider>();
+    final hasInput = project.inputSourceType == 'url'
+        ? project.youtubeUrl.trim().isNotEmpty
+        : project.inputAudioFileName?.trim().isNotEmpty == true;
     final canNext =
         project.projectName.trim().isNotEmpty &&
-        project.inputAudioFileName?.trim().isNotEmpty == true &&
+        hasInput &&
         project.copyrightConfirmed;
 
     return GugakifyAppScaffold(
@@ -62,9 +68,13 @@ class _UploadScreenState extends State<UploadScreen> {
               const SizedBox(height: 18),
               _UploadCard(
                 nameController: _nameController,
+                urlController: _urlController,
+                inputSourceType: project.inputSourceType,
                 copyrightChecked: _copyrightChecked,
                 selectedFileName: _selectedFileName,
                 onSelectFile: _pickAudioFile,
+                onSourceChanged: project.setInputSourceType,
+                onUrlChanged: project.setYoutubeUrl,
                 onNameChanged: (value) {
                   project.setProjectName(value);
                   setState(() {});
@@ -82,9 +92,9 @@ class _UploadScreenState extends State<UploadScreen> {
                     ? () {
                         context.read<ProjectProvider>().setUploadInfo(
                           _nameController.text,
-                          '',
+                          _urlController.text,
                           _copyrightChecked,
-                          mode: 'audio_file',
+                          mode: project.inputSourceType,
                           audioFileName: _selectedFileName,
                           audioFileExtension: _selectedFileExtension,
                           audioFilePath: _selectedFilePath,
@@ -367,18 +377,26 @@ class _CircleIconButton extends StatelessWidget {
 class _UploadCard extends StatelessWidget {
   const _UploadCard({
     required this.nameController,
+    required this.urlController,
+    required this.inputSourceType,
     required this.copyrightChecked,
     required this.selectedFileName,
     required this.onSelectFile,
+    required this.onSourceChanged,
+    required this.onUrlChanged,
     required this.onNameChanged,
     required this.onCopyrightChanged,
     required this.onShowCopyright,
   });
 
   final TextEditingController nameController;
+  final TextEditingController urlController;
+  final String inputSourceType;
   final bool copyrightChecked;
   final String? selectedFileName;
   final VoidCallback onSelectFile;
+  final ValueChanged<String> onSourceChanged;
+  final ValueChanged<String> onUrlChanged;
   final ValueChanged<String> onNameChanged;
   final ValueChanged<bool> onCopyrightChanged;
   final VoidCallback onShowCopyright;
@@ -419,7 +437,7 @@ class _UploadCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                '원곡 음원을 업로드하면 국악기 음색 변환을 시작할 수 있어요.',
+                'URL을 입력하거나 음원 파일을 업로드해 변환을 시작할 수 있어요.',
                 style: TextStyle(
                   color: AppColors.textMuted,
                   fontSize: 13,
@@ -428,6 +446,11 @@ class _UploadCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
+              _InputSourceToggle(
+                value: inputSourceType,
+                onChanged: onSourceChanged,
+              ),
+              const SizedBox(height: 20),
               _ProjectInputField(
                 label: '프로젝트 이름',
                 hintText: '예: APT 국악 버전',
@@ -436,10 +459,13 @@ class _UploadCard extends StatelessWidget {
                 icon: Icons.edit_note_rounded,
               ),
               const SizedBox(height: 18),
-              _FileUploadBox(
-                fileName: selectedFileName,
-                onSelect: onSelectFile,
-              ),
+              if (inputSourceType == 'url')
+                _UrlInputBox(controller: urlController, onChanged: onUrlChanged)
+              else
+                _FileUploadBox(
+                  fileName: selectedFileName,
+                  onSelect: onSelectFile,
+                ),
               const SizedBox(height: 20),
               _CopyrightConfirmBox(
                 checked: copyrightChecked,
@@ -549,6 +575,148 @@ class _ProjectInputField extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _InputSourceToggle extends StatelessWidget {
+  const _InputSourceToggle({required this.value, required this.onChanged});
+
+  final String value;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: AppColors.paleLavender.withValues(alpha: .45),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.borderSoft),
+      ),
+      child: Row(
+        children: [
+          _InputSourceButton(
+            label: 'URL 입력',
+            icon: Icons.link_rounded,
+            selected: value == 'url',
+            onTap: () => onChanged('url'),
+          ),
+          _InputSourceButton(
+            label: '파일 업로드',
+            icon: Icons.upload_file_rounded,
+            selected: value == 'file',
+            onTap: () => onChanged('file'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InputSourceButton extends StatelessWidget {
+  const _InputSourceButton({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(13),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: selected
+                ? AppColors.softPurple
+                : AppColors.backgroundAlt.withValues(alpha: .7),
+            borderRadius: BorderRadius.circular(13),
+            border: Border.all(
+              color: selected ? AppColors.lightPurple : Colors.transparent,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 18, color: AppColors.deepInkPurple),
+              const SizedBox(width: 7),
+              Text(
+                label,
+                style: TextStyle(
+                  color: AppColors.deepInkPurple,
+                  fontSize: 13,
+                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _UrlInputBox extends StatelessWidget {
+  const _UrlInputBox({required this.controller, required this.onChanged});
+
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppColors.paleLavender.withValues(alpha: .32),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.borderSoft),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'URL로 원곡 불러오기',
+            style: TextStyle(
+              color: AppColors.textBlack,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            '변환할 음원의 URL을 입력해주세요.',
+            style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+          ),
+          const SizedBox(height: 14),
+          _ProjectInputField(
+            label: '음원 또는 영상 URL',
+            hintText: 'https://youtube.com/…',
+            controller: controller,
+            onChanged: onChanged,
+            icon: Icons.link_rounded,
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            '일부 URL은 접근 제한으로 처리되지 않을 수 있어요. 이 경우 파일 업로드를 이용해주세요.',
+            style: TextStyle(
+              color: AppColors.textMuted,
+              fontSize: 11,
+              height: 1.45,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

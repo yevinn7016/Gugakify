@@ -23,6 +23,8 @@ class RecentProject {
     this.outputAudioDurationSeconds,
     this.outputVideoDurationSeconds,
     this.inputAudioFileName,
+    this.inputSourceType = 'file',
+    this.youtubeUrl,
     this.outputAudioFileName,
     this.outputVideoFileName,
     this.vocalInstrument,
@@ -52,6 +54,8 @@ class RecentProject {
   final int? outputAudioDurationSeconds;
   final int? outputVideoDurationSeconds;
   final String? inputAudioFileName;
+  final String inputSourceType;
+  final String? youtubeUrl;
   final String? outputAudioFileName;
   final String? outputVideoFileName;
   final String? vocalInstrument;
@@ -81,6 +85,8 @@ class RecentProject {
     int? outputAudioDurationSeconds,
     int? outputVideoDurationSeconds,
     String? inputAudioFileName,
+    String? inputSourceType,
+    String? youtubeUrl,
     String? outputAudioFileName,
     String? outputVideoFileName,
     String? vocalInstrument,
@@ -112,6 +118,8 @@ class RecentProject {
       outputVideoDurationSeconds:
           outputVideoDurationSeconds ?? this.outputVideoDurationSeconds,
       inputAudioFileName: inputAudioFileName ?? this.inputAudioFileName,
+      inputSourceType: inputSourceType ?? this.inputSourceType,
+      youtubeUrl: youtubeUrl ?? this.youtubeUrl,
       outputAudioFileName: outputAudioFileName ?? this.outputAudioFileName,
       outputVideoFileName: outputVideoFileName ?? this.outputVideoFileName,
       vocalInstrument: vocalInstrument ?? this.vocalInstrument,
@@ -144,6 +152,8 @@ class RecentProject {
     'outputAudioDurationSeconds': outputAudioDurationSeconds,
     'outputVideoDurationSeconds': outputVideoDurationSeconds,
     'inputAudioFileName': inputAudioFileName,
+    'inputSourceType': inputSourceType,
+    'youtubeUrl': youtubeUrl,
     'outputAudioFileName': outputAudioFileName,
     'outputVideoFileName': outputVideoFileName,
     'vocalInstrument': vocalInstrument,
@@ -181,6 +191,8 @@ class RecentProject {
       outputVideoDurationSeconds: (json['outputVideoDurationSeconds'] as num?)
           ?.toInt(),
       inputAudioFileName: json['inputAudioFileName'] as String?,
+      inputSourceType: json['inputSourceType'] as String? ?? 'file',
+      youtubeUrl: json['youtubeUrl'] as String?,
       outputAudioFileName: json['outputAudioFileName'] as String?,
       outputVideoFileName: json['outputVideoFileName'] as String?,
       vocalInstrument: json['vocalInstrument'] as String?,
@@ -201,9 +213,9 @@ class ProjectProvider extends ChangeNotifier {
 
   String projectName = '';
   String youtubeUrl = '';
-  String inputMode = 'audio_file';
+  String inputMode = 'url';
   String? uploadedVideoFileName;
-  String inputSourceType = 'audio_file';
+  String inputSourceType = 'url';
   String? inputAudioFileName;
   String? inputAudioFileExtension;
   String? inputAudioFilePath;
@@ -252,6 +264,18 @@ class ProjectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setInputSourceType(String value) {
+    if (value != 'url' && value != 'file') return;
+    inputSourceType = value;
+    inputMode = value;
+    notifyListeners();
+  }
+
+  void setYoutubeUrl(String value) {
+    youtubeUrl = value;
+    notifyListeners();
+  }
+
   void setInputAudioFile({
     required String fileName,
     String? extension,
@@ -268,9 +292,9 @@ class ProjectProvider extends ChangeNotifier {
   void resetCurrentProject() {
     projectName = '';
     youtubeUrl = '';
-    inputMode = 'audio_file';
+    inputMode = 'url';
     uploadedVideoFileName = null;
-    inputSourceType = 'audio_file';
+    inputSourceType = 'url';
     inputAudioFileName = null;
     inputAudioFileExtension = null;
     inputAudioFilePath = null;
@@ -317,9 +341,10 @@ class ProjectProvider extends ChangeNotifier {
   }) {
     projectName = name.trim();
     youtubeUrl = url.trim();
-    inputMode = mode;
+    final normalizedMode = mode == 'audio_file' ? 'file' : mode;
+    inputMode = normalizedMode;
     uploadedVideoFileName = fileName;
-    inputSourceType = 'audio_file';
+    inputSourceType = normalizedMode;
     inputAudioFileName = audioFileName;
     inputAudioFileExtension = audioFileExtension;
     inputAudioFilePath = audioFilePath;
@@ -482,6 +507,9 @@ class ProjectProvider extends ChangeNotifier {
     outputAudioUrl = project.outputAudioUrl;
     outputVideoDurationSeconds = project.outputVideoDurationSeconds;
     inputAudioFileName = project.inputAudioFileName;
+    inputSourceType = project.inputSourceType;
+    inputMode = project.inputSourceType;
+    youtubeUrl = project.youtubeUrl ?? '';
     inputAudioFileExtension = null;
     inputAudioFilePath = null;
     inputAudioFileBytes = null;
@@ -520,9 +548,9 @@ class ProjectProvider extends ChangeNotifier {
     if (currentProjectId == id) {
       projectName = '';
       youtubeUrl = '';
-      inputMode = 'audio_file';
+      inputMode = 'url';
       uploadedVideoFileName = null;
-      inputSourceType = 'audio_file';
+      inputSourceType = 'url';
       inputAudioFileName = null;
       inputAudioFileExtension = null;
       inputAudioFilePath = null;
@@ -592,6 +620,8 @@ class ProjectProvider extends ChangeNotifier {
       outputAudioDurationSeconds: outputAudioDurationSeconds,
       outputVideoDurationSeconds: outputVideoDurationSeconds,
       inputAudioFileName: inputAudioFileName,
+      inputSourceType: inputSourceType,
+      youtubeUrl: youtubeUrl,
       outputAudioFileName:
           outputAudioFileName ?? buildOutputAudioFileName(projectName),
       outputVideoFileName:
