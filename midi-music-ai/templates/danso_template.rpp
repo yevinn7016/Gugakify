@@ -1,0 +1,926 @@
+<REAPER_PROJECT 0.1 "7.77/win64" 1784118037 0
+  <NOTES 0 2
+  >
+  RIPPLE 0 0
+  GROUPOVERRIDE 0 0 0 0
+  AUTOXFADE 129
+  ENVATTACH 3
+  POOLEDENVATTACH 0
+  TCPUIFLAGS 0
+  MIXERUIFLAGS 11 48 0
+  ENVFADESZ10 40
+  PEAKGAIN 1
+  FEEDBACK 0
+  PANLAW 1
+  PROJOFFS 0 0 0
+  MAXPROJLEN 0 0
+  GRID 3199 8 1 8 1 0 0 0
+  TIMEMODE 1 5 -1 30 0 0 -1 0
+  VIDEO_CONFIG 0 0 65792
+  PANMODE 3
+  PANLAWFLAGS 3
+  CURSOR 6.5
+  ZOOM 100 0 0
+  VZOOMEX 6 0
+  USE_REC_CFG 0
+  RECMODE 1
+  SMPTESYNC 0 30 100 40 1000 300 0 0 1 0 0
+  LOOP 0
+  LOOPGRAN 0 4
+  RECORD_PATH "Media" ""
+  <RECORD_CFG
+    ZXZhdxgAAQ==
+  >
+  <APPLYFX_CFG
+  >
+  RENDER_FILE "C:\Users\yebin\gugakify\midi-music-ai\outputs\danso_wav\vocals_danso.wav"
+  RENDER_FMT 0 2 44100
+  RENDER_1X 2
+  RENDER_RANGE 1 0 0 0 1000
+  RENDER_RESAMPLE 3 0 1
+  RENDER_ADDTOPROJ 0
+  RENDER_STEMS 0
+  RENDER_DITHER 0
+  RENDER_TRIM 0.000001 0.000001 0 0
+  TIMELOCKMODE 1
+  TEMPOENVLOCKMODE 1
+  ITEMMIX 1
+  DEFPITCHMODE 589824 0
+  TAKELANE 1
+  SAMPLERATE 44100 0 0
+  <RENDER_CFG
+    ZXZhdxAAAQ==
+  >
+  LOCK 1
+  <METRONOME 6 2
+    VOL 0.25 0.125
+    BEATLEN 4
+    FREQ 1760 880 1
+    SAMPLES "" "" "" ""
+    SPLIGNORE 0 0
+    SPLDEF 2 660 "" 0 ""
+    SPLDEF 3 440 "" 0 ""
+    PATTERN 0 169
+    PATTERNSTR ABBB
+    MULT 1
+  >
+  GLOBAL_AUTO -1
+  TEMPO 120 4 4 0
+  PLAYRATE 1 0 0.25 4
+  SELECTION 0 0
+  SELECTION2 0 0
+  MASTERAUTOMODE 0
+  MASTERTRACKHEIGHT 0 0
+  MASTERPEAKCOL 16576
+  MASTERMUTESOLO 0
+  MASTERTRACKVIEW 0 0.6667 0.5 0.5 0 0 0 0 0 0 0 0 0 0 1
+  MASTERHWOUT 0 0 1 0 0 0 0 -1
+  MASTER_NCH 2 2
+  MASTER_VOLUME 1 0 -1 -1 1
+  MASTER_PANMODE 3
+  MASTER_PANLAWFLAGS 3
+  MASTER_FX 1
+  MASTER_SEL 0
+  <MASTERPLAYSPEEDENV
+    EGUID {2CAC8E57-0689-441B-9211-A97C877A16AA}
+    ACT 0 -1
+    VIS 0 1 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 0 -1 -1
+  >
+  <TEMPOENVEX
+    EGUID {0253C4F6-2952-4EDE-8F88-B1DBFB35BE90}
+    ACT 0 -1
+    VIS 1 0 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 1 -1 -1
+  >
+  RULERHEIGHT 86 86
+  RULERLANE 1 4 "" 0 -1 0
+  RULERLANE 2 8 "" 0 -1 0
+  <PROJBAY
+  >
+  <TRACK {DEAEC451-FB70-4A5F-A673-34C6251A07A5}
+    NAME "Kontakt 8"
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 1 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    LANEREC -1 -1 -1 0
+    SEL 1
+    REC 1 5088 1 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {DEAEC451-FB70-4A5F-A673-34C6251A07A5}
+    PERF 0
+    MIDIOUT -1 -1
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 19 47 1304 782
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST3i: Kontakt 8 (Native Instruments) (64 out)" "Kontakt 8.vst3" 0 "" 952745140{5653544E694B386B6F6E74616B742038} ""
+        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
+      >
+      PRESETNAME "Kontakt: MIDI channel 0 program 0"
+      FLOATPOS 0 0 0 0
+      FXID {27FDF1B7-D61E-4768-A6ED-F33C81757BD9}
+      WAK 0 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 11
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {E815174A-620A-410A-BEE3-8BF87F5AA608}
+      IID 9
+      NAME current_danso.mid
+      VOLPAN 1 0 1 -1
+      SOFFS 0 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {F54C684B-B4ED-43E6-B6F9-CCD0EA065924}
+      <SOURCE MIDI
+        HASDATA 1 220 QN
+        CCINTERP 32
+        POOLEDEVTS {363A08EC-2AE1-4F20-BB40-8121C86375FD}
+        E 0 c0 04 00
+        E 204 e0 2b 35
+        E 0 90 4d 6e
+        E 6 e0 2b 35
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 0 90 4d 00
+        E 0 90 4d 68
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 00 40
+        E 0 90 4d 00
+        E 0 90 4d 61
+        E 6 e0 00 40
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 00 40
+        E 5 e0 00 40
+        E 6 e0 00 40
+        E 5 e0 55 4a
+        E 0 90 4d 00
+        E 0 90 4d 57
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 0 90 4d 00
+        E 87 e0 55 2a
+        E 0 90 4c 63
+        E 5 e0 2b 35
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 0 90 4c 00
+        E 0 90 4d 5b
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 00 40
+        E 5 e0 00 40
+        E 6 e0 00 40
+        E 5 e0 00 40
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 6a
+        E 0 90 4b 56
+        E 0 90 4d 00
+        E 6 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 00 40
+        E 5 e0 00 40
+        E 6 e0 00 40
+        E 6 e0 00 40
+        E 5 e0 55 4a
+        E 6 e0 2b 55
+        E 0 90 4b 00
+        E 0 90 4c 5d
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 0 90 4c 00
+        E 10 e0 55 4a
+        E 0 90 48 57
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 0 90 48 00
+        E 112 e0 2b 55
+        E 0 90 48 55
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 2b 55
+        E 0 90 48 00
+        E 5 e0 00 40
+        E 0 90 4a 39
+        E 5 e0 00 40
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 00 40
+        E 5 e0 00 40
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 00 40
+        E 0 90 4a 00
+        E 0 90 4a 2c
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 2a
+        E 5 e0 55 4a
+        E 6 e0 55 2a
+        E 5 e0 55 2a
+        E 5 e0 55 4a
+        E 6 e0 00 40
+        E 5 e0 2b 35
+        E 6 e0 2b 35
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 0 90 4a 00
+        E 0 90 4a 5f
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 00 40
+        E 5 e0 00 40
+        E 0 90 4a 00
+        E 87 e0 55 4a
+        E 0 90 48 61
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 00 40
+        E 5 e0 00 40
+        E 5 e0 00 40
+        E 0 90 48 00
+        E 0 90 48 5a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 0 90 48 00
+        E 558 e0 55 2a
+        E 0 90 4a 5a
+        E 5 e0 2b 35
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 00 40
+        E 6 e0 00 40
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 2b 55
+        E 5 e0 00 60
+        E 0 90 4a 00
+        E 0 90 4a 6a
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 00 40
+        E 5 e0 00 40
+        E 0 90 4a 00
+        E 0 90 4a 59
+        E 92 90 4c 56
+        E 11 90 4a 00
+        E 51 90 4c 00
+        E 5 e0 55 4a
+        E 0 90 4d 5f
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 0 90 4d 00
+        E 35 e0 00 60
+        E 0 90 48 5e
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 2b 55
+        E 5 e0 00 60
+        E 5 e0 55 6a
+        E 0 90 48 00
+        E 62 e0 55 2a
+        E 0 90 4f 5c
+        E 5 e0 2b 35
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 2a
+        E 5 e0 55 2a
+        E 5 e0 55 2a
+        E 0 90 4f 00
+        E 5 e0 2b 55
+        E 0 90 4d 69
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 6 e0 00 60
+        E 5 e0 00 60
+        E 0 90 4d 00
+        E 0 90 4d 59
+        E 5 e0 2b 55
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 00 40
+        E 6 e0 00 40
+        E 5 e0 00 40
+        E 0 90 4d 00
+        E 51 e0 55 4a
+        E 0 90 48 56
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 0 90 48 00
+        E 20 e0 2b 55
+        E 0 90 46 6a
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 2b 55
+        E 0 90 45 61
+        E 0 90 46 00
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 2b 55
+        E 0 90 45 00
+        E 0 90 46 56
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 0 90 46 00
+        E 62 e0 2b 35
+        E 0 90 47 31
+        E 5 e0 2b 35
+        E 6 e0 2b 35
+        E 5 e0 2b 35
+        E 6 e0 2b 35
+        E 6 e0 2b 35
+        E 5 e0 2b 35
+        E 6 e0 55 2a
+        E 5 e0 55 2a
+        E 6 e0 2b 35
+        E 5 e0 00 40
+        E 6 e0 00 40
+        E 0 90 47 00
+        E 0 90 48 66
+        E 5 e0 2b 35
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 0 90 48 00
+        E 0 90 48 5d
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 00 40
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 6 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 55 4a
+        E 5 e0 2b 55
+        E 6 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 5 e0 2b 55
+        E 0 90 48 00
+        E 97 b0 7b 00
+        CCINTERP 32
+        CHASE_CC_TAKEOFFS 1
+        GUID {07818237-B584-4D56-8CB4-0E3F8DFA90D9}
+        IGNTEMPO 0 120 4 4
+        SRCCOLOR 23
+        EVTFILTER 0 -1 -1 -1 -1 0 0 0 0 -1 -1 -1 -1 0 -1 0 -1 -1
+      >
+      <EXT
+        ORIGINAL_FILENAME C:\Users\yebin\gugakify\midi-music-ai\runtime\current_danso.mid
+      >
+    >
+  >
+>
