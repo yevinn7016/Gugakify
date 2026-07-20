@@ -23,12 +23,12 @@ class AudioResultScreen extends StatelessWidget {
     final projectName = project.projectName.isEmpty
         ? '새 프로젝트'
         : project.projectName;
-    final jangdan = _jangdanLabel(project.preferredJangdan);
-    final mood = _moodLabel(project.targetMood);
-    final intensity = _intensityLabel(project.conversionIntensity);
-    final instruments = project.preferredInstruments.isEmpty
-        ? '자동 추천'
-        : project.preferredInstruments.map(_instrumentLabel).join(', ');
+    final accompaniment = project.accompanimentInstrument == null
+        ? '선택 전'
+        : _instrumentLabel(project.accompanimentInstrument!);
+    final outputFileName =
+        project.outputAudioFileName ??
+        ProjectProvider.buildOutputAudioFileName(project.projectName);
 
     return GugakifyAppScaffold(
       backgroundColor: AppColors.background,
@@ -43,30 +43,40 @@ class AudioResultScreen extends StatelessWidget {
                 onBack: () => context.go('/audio/settings'),
               ),
               const SizedBox(height: 20),
-              _CompletionHeroCard(bpm: '128', jangdan: jangdan, mood: mood),
+              const _CompletionHeroCard(),
               const SizedBox(height: 16),
               _AudioPlayerCard(
+                fileName: outputFileName,
                 duration: duration,
                 onDownload: () => ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('다운로드할 음원이 아직 없습니다.')),
+                  SnackBar(
+                    content: Text(
+                      project.outputAudioUrl == null
+                          ? '다운로드할 음원이 아직 없습니다.'
+                          : '최종 WAV 다운로드를 준비하고 있습니다.',
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
               _ResultSummaryCard(
                 items: [
-                  _SummaryItem(label: '변환 방향', value: intensity),
                   _SummaryItem(
-                    label: '선율 유지',
-                    value: project.preserveMelody ? '켜짐' : '꺼짐',
+                    label: '입력 파일',
+                    value: project.inputAudioFileName ?? '선택 전',
                   ),
                   _SummaryItem(
-                    label: '보컬 유지',
-                    value: project.preserveVocal ? '켜짐' : '꺼짐',
+                    label: '보컬 악기',
+                    value: project.vocalInstrument == null
+                        ? '선택 전'
+                        : _instrumentLabel(project.vocalInstrument!),
                   ),
-                  _SummaryItem(label: '장단', value: jangdan),
-                  _SummaryItem(label: '분위기', value: mood),
-                  _SummaryItem(label: '악기', value: instruments),
-                  const _SummaryItem(label: 'BPM', value: '128'),
+                  _SummaryItem(label: '반주 악기', value: accompaniment),
+                  _SummaryItem(label: '생성 파일', value: outputFileName),
+                  const _SummaryItem(
+                    label: '처리 방식',
+                    value: '보컬/반주 분리 → MIDI 생성 → 악기별 렌더링 → 합성',
+                  ),
                   _SummaryItem(label: '길이', value: formatDuration(duration)),
                 ],
               ),
@@ -115,68 +125,20 @@ class AudioResultScreen extends StatelessWidget {
   }
 }
 
-String _jangdanLabel(String? value) {
-  switch (value) {
-    case 'jajinmori':
-      return '자진모리';
-    case 'jungmori':
-      return '중모리';
-    case 'gutgeori':
-      return '굿거리';
-    case 'semachi':
-      return '세마치';
-    case 'auto':
-    case null:
-      return '자동 추천';
-    default:
-      return value;
-  }
-}
-
 String _instrumentLabel(String value) {
   switch (value) {
     case 'gayageum':
       return '가야금';
+    case 'geomungo':
+      return '거문고';
     case 'haegeum':
       return '해금';
     case 'daegeum':
       return '대금';
-    case 'janggu':
-      return '장구';
-    case 'samulnori':
-      return '사물놀이';
-    default:
-      return value;
-  }
-}
-
-String _moodLabel(String? value) {
-  switch (value) {
-    case 'energetic':
-      return '신나는';
-    case 'calm':
-      return '잔잔한';
-    case 'grand':
-      return '웅장한';
-    case 'dreamy':
-      return '몽환적인';
-    case 'auto':
-    case null:
-      return '자동 추천';
-    default:
-      return value;
-  }
-}
-
-String _intensityLabel(String? value) {
-  switch (value) {
-    case 'original_focused':
-      return '원곡 중심';
-    case 'gugak_focused':
-      return '국악 중심';
-    case 'balanced':
-    case null:
-      return '균형 있게';
+    case 'piri':
+      return '피리';
+    case 'danso':
+      return '단소';
     default:
       return value;
   }
@@ -359,15 +321,7 @@ class _StepPill extends StatelessWidget {
 }
 
 class _CompletionHeroCard extends StatelessWidget {
-  const _CompletionHeroCard({
-    required this.bpm,
-    required this.jangdan,
-    required this.mood,
-  });
-
-  final String bpm;
-  final String jangdan;
-  final String mood;
+  const _CompletionHeroCard();
 
   @override
   Widget build(BuildContext context) {
@@ -405,7 +359,7 @@ class _CompletionHeroCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '국악 스타일 음원이\n완성됐어요',
+                          '국악 스타일 음원이\n준비됐어요',
                           style: TextStyle(
                             color: AppColors.textBlack,
                             fontSize: 21,
@@ -415,7 +369,7 @@ class _CompletionHeroCard extends StatelessWidget {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          '원곡의 흐름을 바탕으로 장단과 국악 악기 구성을 반영해 재해석했습니다.',
+                          '보컬과 반주를 분리한 뒤, 선택한 국악기 음색으로 다시 구성한 결과입니다.',
                           style: TextStyle(
                             color: AppColors.textMuted,
                             fontSize: 13,
@@ -433,9 +387,9 @@ class _CompletionHeroCard extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _MetaPill(label: 'BPM $bpm'),
-                  _MetaPill(label: jangdan),
-                  _MetaPill(label: '$mood 분위기'),
+                  const _MetaPill(label: '최종 WAV'),
+                  const _MetaPill(label: '멜로디 유지'),
+                  const _MetaPill(label: 'MIDI 기반 렌더링'),
                 ],
               ),
             ],
@@ -473,8 +427,13 @@ class _MetaPill extends StatelessWidget {
 }
 
 class _AudioPlayerCard extends StatelessWidget {
-  const _AudioPlayerCard({required this.duration, required this.onDownload});
+  const _AudioPlayerCard({
+    required this.fileName,
+    required this.duration,
+    required this.onDownload,
+  });
 
+  final String fileName;
   final Duration duration;
   final VoidCallback onDownload;
 
@@ -494,7 +453,7 @@ class _AudioPlayerCard extends StatelessWidget {
               ),
               SizedBox(width: 8),
               Text(
-                '변환된 국악 음원',
+                '최종 WAV 결과 음원',
                 style: TextStyle(
                   color: AppColors.textBlack,
                   fontSize: 17,
@@ -514,7 +473,7 @@ class _AudioPlayerCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           MockAudioPlayer(
-            title: 'Gugakify audio result',
+            title: fileName,
             duration: duration,
             onDownload: onDownload,
           ),
@@ -646,7 +605,7 @@ class _MvGuideCard extends StatelessWidget {
           SizedBox(
             width: 258,
             child: Text(
-              '이 음원을 기반으로 수묵화, 채색화, 산수화 스타일의 전통 MV를 이어서 만들 수 있어요.',
+              '이 음원을 기반으로 수묵화 또는 민화 스타일의 전통 화풍 MV를 이어서 만들 수 있어요.',
               style: TextStyle(
                 color: AppColors.textMuted,
                 fontSize: 12,

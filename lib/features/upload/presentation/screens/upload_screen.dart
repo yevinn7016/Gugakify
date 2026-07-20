@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -16,32 +18,38 @@ class UploadScreen extends StatefulWidget {
 
 class _UploadScreenState extends State<UploadScreen> {
   late final TextEditingController _nameController;
-  late final TextEditingController _urlController;
   bool _copyrightChecked = false;
-
-  bool get _canNext =>
-      _nameController.text.trim().isNotEmpty &&
-      _urlController.text.trim().isNotEmpty &&
-      _copyrightChecked;
+  String? _selectedFileName;
+  String? _selectedFileExtension;
+  String? _selectedFilePath;
+  Uint8List? _selectedFileBytes;
 
   @override
   void initState() {
     super.initState();
     final project = context.read<ProjectProvider>();
     _nameController = TextEditingController(text: project.projectName);
-    _urlController = TextEditingController(text: project.youtubeUrl);
     _copyrightChecked = project.copyrightConfirmed;
+    _selectedFileName = project.inputAudioFileName;
+    _selectedFileExtension = project.inputAudioFileExtension;
+    _selectedFilePath = project.inputAudioFilePath;
+    _selectedFileBytes = project.inputAudioFileBytes;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _urlController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final project = context.watch<ProjectProvider>();
+    final canNext =
+        project.projectName.trim().isNotEmpty &&
+        project.inputAudioFileName?.trim().isNotEmpty == true &&
+        project.copyrightConfirmed;
+
     return GugakifyAppScaffold(
       backgroundColor: AppColors.background,
       child: Stack(
@@ -54,23 +62,33 @@ class _UploadScreenState extends State<UploadScreen> {
               const SizedBox(height: 18),
               _UploadCard(
                 nameController: _nameController,
-                urlController: _urlController,
                 copyrightChecked: _copyrightChecked,
-                onNameChanged: (_) => setState(() {}),
-                onUrlChanged: (_) => setState(() {}),
-                onCopyrightChanged: (value) =>
-                    setState(() => _copyrightChecked = value),
+                selectedFileName: _selectedFileName,
+                onSelectFile: _pickAudioFile,
+                onNameChanged: (value) {
+                  project.setProjectName(value);
+                  setState(() {});
+                },
+                onCopyrightChanged: (value) {
+                  project.setCopyrightConfirmed(value);
+                  setState(() => _copyrightChecked = value);
+                },
                 onShowCopyright: () => _showCopyrightSheet(context),
               ),
               const SizedBox(height: 22),
               PrimaryLavenderButton(
                 label: '다음',
-                onPressed: _canNext
+                onPressed: canNext
                     ? () {
                         context.read<ProjectProvider>().setUploadInfo(
                           _nameController.text,
-                          _urlController.text.trim(),
+                          '',
                           _copyrightChecked,
+                          mode: 'audio_file',
+                          audioFileName: _selectedFileName,
+                          audioFileExtension: _selectedFileExtension,
+                          audioFilePath: _selectedFilePath,
+                          audioFileBytes: _selectedFileBytes,
                         );
                         context.go('/audio/settings');
                       }
@@ -81,6 +99,43 @@ class _UploadScreenState extends State<UploadScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _pickAudioFile() async {
+    FilePickerResult? result;
+    try {
+      result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: const ['mp3', 'wav', 'm4a'],
+        allowMultiple: false,
+        withData: kIsWeb,
+      );
+    } on Exception catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('파일 선택 창을 열지 못했습니다: $error')));
+      return;
+    }
+    if (!mounted || result == null || result.files.isEmpty) return;
+
+    final file = result.files.single;
+    context.read<ProjectProvider>().setInputAudioFile(
+      fileName: file.name,
+      extension: file.extension?.toLowerCase(),
+      path: file.path,
+      bytes: file.bytes,
+    );
+    setState(() {
+      _selectedFileName = file.name;
+      _selectedFileExtension = file.extension?.toLowerCase();
+      _selectedFilePath = file.path;
+      _selectedFileBytes = file.bytes;
+    });
+
+    // TODO: 실제 서비스에서는 선택한 audio 파일을 백엔드로 업로드한다.
+    // TODO: 백엔드가 AI 서버 POST /jobs를 호출한다.
+    // TODO: AI_API_KEY는 Flutter 코드에 포함하지 않는다.
   }
 
   void _showCopyrightSheet(BuildContext context) {
@@ -136,9 +191,7 @@ class _UploadScreenState extends State<UploadScreen> {
               const _CopyrightBullet(
                 '타인의 저작물을 무단으로 업로드하거나 변환한 결과물을 배포해서는 안 됩니다.',
               ),
-              const _CopyrightBullet(
-                'YouTube 링크를 사용하는 경우에도 해당 콘텐츠의 이용 조건과 저작권을 확인해야 합니다.',
-              ),
+              const _CopyrightBullet('업로드하는 원곡 음원의 이용 조건과 저작권을 반드시 확인해야 합니다.'),
               const _CopyrightBullet(
                 '생성된 결과물은 대회 시연 및 개인 학습 목적의 mock 결과로 사용됩니다.',
               ),
@@ -149,6 +202,7 @@ class _UploadScreenState extends State<UploadScreen> {
               PrimaryLavenderButton(
                 label: '확인했어요',
                 onPressed: () {
+                  context.read<ProjectProvider>().setCopyrightConfirmed(true);
                   setState(() => _copyrightChecked = true);
                   Navigator.of(sheetContext).pop();
                 },
@@ -313,19 +367,19 @@ class _CircleIconButton extends StatelessWidget {
 class _UploadCard extends StatelessWidget {
   const _UploadCard({
     required this.nameController,
-    required this.urlController,
     required this.copyrightChecked,
+    required this.selectedFileName,
+    required this.onSelectFile,
     required this.onNameChanged,
-    required this.onUrlChanged,
     required this.onCopyrightChanged,
     required this.onShowCopyright,
   });
 
   final TextEditingController nameController;
-  final TextEditingController urlController;
   final bool copyrightChecked;
+  final String? selectedFileName;
+  final VoidCallback onSelectFile;
   final ValueChanged<String> onNameChanged;
-  final ValueChanged<String> onUrlChanged;
   final ValueChanged<bool> onCopyrightChanged;
   final VoidCallback onShowCopyright;
 
@@ -365,7 +419,7 @@ class _UploadCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                '프로젝트 이름과 YouTube 링크를 입력하면 국악 스타일 변환을 시작할 수 있어요.',
+                '원곡 음원을 업로드하면 국악기 음색 변환을 시작할 수 있어요.',
                 style: TextStyle(
                   color: AppColors.textMuted,
                   fontSize: 13,
@@ -382,13 +436,9 @@ class _UploadCard extends StatelessWidget {
                 icon: Icons.edit_note_rounded,
               ),
               const SizedBox(height: 18),
-              _ProjectInputField(
-                label: 'YouTube URL',
-                hintText: 'https://youtube.com/...',
-                controller: urlController,
-                keyboardType: TextInputType.url,
-                onChanged: onUrlChanged,
-                icon: Icons.link_rounded,
+              _FileUploadBox(
+                fileName: selectedFileName,
+                onSelect: onSelectFile,
               ),
               const SizedBox(height: 20),
               _CopyrightConfirmBox(
@@ -435,7 +485,6 @@ class _ProjectInputField extends StatelessWidget {
     required this.controller,
     required this.onChanged,
     required this.icon,
-    this.keyboardType,
   });
 
   final String label;
@@ -443,7 +492,6 @@ class _ProjectInputField extends StatelessWidget {
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
   final IconData icon;
-  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -461,7 +509,6 @@ class _ProjectInputField extends StatelessWidget {
         const SizedBox(height: 9),
         TextField(
           controller: controller,
-          keyboardType: keyboardType,
           onChanged: onChanged,
           style: const TextStyle(
             color: AppColors.textBlack,
@@ -502,6 +549,102 @@ class _ProjectInputField extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _FileUploadBox extends StatelessWidget {
+  const _FileUploadBox({required this.fileName, required this.onSelect});
+
+  final String? fileName;
+  final VoidCallback onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasFile = fileName?.trim().isNotEmpty == true;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: hasFile
+            ? AppColors.paleLavender.withValues(alpha: .62)
+            : AppColors.paleLavender.withValues(alpha: .32),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE1D9E8)),
+      ),
+      child: Column(
+        children: [
+          const Icon(
+            Icons.upload_file_rounded,
+            color: AppColors.primaryPurple,
+            size: 36,
+          ),
+          const SizedBox(height: 9),
+          const Text(
+            '원곡 음원 업로드',
+            style: TextStyle(
+              color: AppColors.textBlack,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            '국악기 음색으로 변환할 원곡 음원을 업로드해주세요.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            hasFile ? '선택한 파일' : '아직 선택된 파일이 없어요',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppColors.deepInkPurple,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          if (!hasFile)
+            const Text(
+              'MP3, WAV, M4A 파일을 선택해주세요.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.textMuted, fontSize: 11),
+            ),
+          if (hasFile) ...[
+            const SizedBox(height: 11),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: AppColors.primaryPurple,
+                  size: 18,
+                ),
+                const SizedBox(width: 7),
+                Flexible(
+                  child: Text(
+                    fileName!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AppColors.textBlack,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: onSelect,
+            icon: const Icon(Icons.folder_open_rounded, size: 18),
+            label: const Text('파일 선택하기'),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -41,6 +41,7 @@ dependencies:
   video_player: ^2.11.1
   just_audio: ^0.10.6
   shared_preferences: ^2.5.5
+  file_picker: ^11.0.2
 
 dev_dependencies:
   flutter_test:

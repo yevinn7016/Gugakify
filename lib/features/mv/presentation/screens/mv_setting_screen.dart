@@ -10,28 +10,13 @@ import '../../../../shared/widgets/primary_lavender_button.dart';
 const _visualStyleOptions = {
   'sumukhwa': _VisualStyleOption(
     label: '수묵화',
-    description: '먹의 농담과 여백 중심의 차분한 영상',
+    description: '먹의 흐름과 한지 질감이 살아있는 수묵 스타일',
     icon: Icons.brush_outlined,
   ),
-  'chaesaekhwa': _VisualStyleOption(
-    label: '채색화',
-    description: '은은한 전통 색감이 살아있는 화사한 영상',
+  'minhwa': _VisualStyleOption(
+    label: '민화',
+    description: '전통 색감과 장식성이 살아있는 민화 스타일',
     icon: Icons.palette_outlined,
-  ),
-  'sumukh_damchae': _VisualStyleOption(
-    label: '수묵담채화',
-    description: '먹선과 옅은 채색이 어우러진 부드러운 영상',
-    icon: Icons.gradient_outlined,
-  ),
-  'palace_painting': _VisualStyleOption(
-    label: '궁중채색화',
-    description: '궁중 장식과 선명한 전통 색채가 느껴지는 영상',
-    icon: Icons.account_balance_outlined,
-  ),
-  'landscape': _VisualStyleOption(
-    label: '산수화',
-    description: '산, 달, 구름이 흐르는 풍경 중심 영상',
-    icon: Icons.landscape_outlined,
   ),
 };
 
@@ -65,10 +50,7 @@ class MvSettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final project = context.watch<ProjectProvider>();
-    final canStart =
-        project.visualStyle != null &&
-        project.effectMode != null &&
-        project.aspectRatio != null;
+    final canStart = project.visualStyle != null && project.aspectRatio != null;
     final projectName = project.projectName.isEmpty
         ? '새 프로젝트'
         : project.projectName;
@@ -93,11 +75,6 @@ class MvSettingScreen extends StatelessWidget {
                 onTap: (value) => project.setMvSettings(style: value),
               ),
               const SizedBox(height: 16),
-              _EffectModeSection(
-                selected: project.effectMode,
-                onTap: (value) => project.setMvSettings(effect: value),
-              ),
-              const SizedBox(height: 16),
               _AspectRatioSection(
                 selected: project.aspectRatio,
                 onTap: (value) => project.setMvSettings(ratio: value),
@@ -105,7 +82,6 @@ class MvSettingScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _MvSummaryCard(
                 visualStyle: project.visualStyle,
-                effectMode: project.effectMode,
                 aspectRatio: project.aspectRatio,
               ),
               const SizedBox(height: 22),
@@ -114,6 +90,14 @@ class MvSettingScreen extends StatelessWidget {
                 icon: const Icon(Icons.movie_creation_outlined, size: 19),
                 onPressed: canStart
                     ? () {
+                        // TODO(backend integration point): route through the backend.
+                        // URL: POST /api/v1/mv-conversions
+                        // File: POST /api/v1/mv-conversions/upload
+                        // Poll/result: GET /api/v1/mv-conversions/{jobId}[/result]
+                        // styleType: sumukhwa|minhwa, preserveAudio: true
+                        project.setMvSettings(
+                          effect: project.effectMode ?? 'balanced',
+                        );
                         project.updateStatus('mv_processing', newProgress: 0);
                         context.go('/mv/processing');
                       }
@@ -350,7 +334,7 @@ class _MvHeroCard extends StatelessWidget {
               const _StepPill(label: 'AI Traditional MV'),
               const SizedBox(height: 16),
               const Text(
-                '국악 음원에 어울리는\n전통 MV를 만들어보세요',
+                '전통 화풍 MV 변환',
                 style: TextStyle(
                   color: AppColors.textBlack,
                   fontSize: 21,
@@ -360,7 +344,7 @@ class _MvHeroCard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Text(
-                '수묵화와 채색화, 산수화 스타일을 바탕으로 음악의 장단과 분위기에 맞는 영상을 생성합니다.',
+                '입력 영상을 한국 전통 화풍으로 변환합니다.',
                 style: TextStyle(
                   color: AppColors.textMuted,
                   fontSize: 13,
@@ -373,9 +357,9 @@ class _MvHeroCard extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _MetaPill(label: '전체 음원 기반'),
-                  _MetaPill(label: '장단 반응형 연출'),
-                  _MetaPill(label: '전통 수묵 효과'),
+                  _MetaPill(label: '프레임 스타일 변환'),
+                  _MetaPill(label: '원본 오디오 유지'),
+                  _MetaPill(label: '수묵화 · 민화'),
                 ],
               ),
             ],
@@ -575,6 +559,8 @@ class _PreviewStrokePainter extends CustomPainter {
   }
 }
 
+// Retained as a dormant mock option; the current MV API does not expose it.
+// ignore: unused_element
 class _EffectModeSection extends StatelessWidget {
   const _EffectModeSection({required this.selected, required this.onTap});
 
@@ -808,14 +794,9 @@ class _AspectRatioCard extends StatelessWidget {
 }
 
 class _MvSummaryCard extends StatelessWidget {
-  const _MvSummaryCard({
-    required this.visualStyle,
-    required this.effectMode,
-    required this.aspectRatio,
-  });
+  const _MvSummaryCard({required this.visualStyle, required this.aspectRatio});
 
   final String? visualStyle;
-  final String? effectMode;
   final String? aspectRatio;
 
   @override
@@ -825,11 +806,10 @@ class _MvSummaryCard extends StatelessWidget {
       child: Column(
         children: [
           _SummaryRow(label: '스타일', value: _visualLabel(visualStyle)),
-          _SummaryRow(label: '연출', value: _effectLabel(effectMode)),
           _SummaryRow(label: '비율', value: aspectRatio ?? '선택 전'),
           const _SummaryRow(
-            label: '길이',
-            value: '전체 음원 길이에 맞춰 생성',
+            label: '처리 방식',
+            value: '프레임 단위 전통 화풍 변환',
             isLast: true,
           ),
         ],
@@ -842,13 +822,6 @@ class _MvSummaryCard extends StatelessWidget {
       return '선택 전';
     }
     return _visualStyleOptions[value]?.label ?? value;
-  }
-
-  String _effectLabel(String? value) {
-    if (value == null) {
-      return '선택 전';
-    }
-    return _effectModeOptions[value]?.label ?? value;
   }
 }
 

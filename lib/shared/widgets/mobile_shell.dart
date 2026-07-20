@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 
 class MobileShell extends StatelessWidget {
-  const MobileShell({super.key, required this.child});
+  const MobileShell({super.key, required this.child, this.useSafeArea = true});
 
   final Widget child;
+  final bool useSafeArea;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +33,11 @@ class MobileShell extends StatelessWidget {
                   ),
               ],
             ),
-            child: SafeArea(
-              child: SizedBox(width: double.infinity, child: child),
-            ),
+            child: useSafeArea
+                ? SafeArea(
+                    child: SizedBox(width: double.infinity, child: child),
+                  )
+                : SizedBox.expand(child: child),
           ),
         ),
       ),

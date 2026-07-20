@@ -22,6 +22,15 @@ class RecentProject {
     this.thumbnailUrl,
     this.outputAudioDurationSeconds,
     this.outputVideoDurationSeconds,
+    this.inputAudioFileName,
+    this.outputAudioFileName,
+    this.outputVideoFileName,
+    this.vocalInstrument,
+    this.accompanimentInstrument,
+    this.aiJobId,
+    this.aiJobStatus,
+    this.midiDownloadUrl,
+    this.resultUploadUrl,
   });
 
   final String id;
@@ -42,6 +51,15 @@ class RecentProject {
   final String? thumbnailUrl;
   final int? outputAudioDurationSeconds;
   final int? outputVideoDurationSeconds;
+  final String? inputAudioFileName;
+  final String? outputAudioFileName;
+  final String? outputVideoFileName;
+  final String? vocalInstrument;
+  final String? accompanimentInstrument;
+  final String? aiJobId;
+  final String? aiJobStatus;
+  final String? midiDownloadUrl;
+  final String? resultUploadUrl;
 
   RecentProject copyWith({
     String? id,
@@ -62,6 +80,15 @@ class RecentProject {
     String? thumbnailUrl,
     int? outputAudioDurationSeconds,
     int? outputVideoDurationSeconds,
+    String? inputAudioFileName,
+    String? outputAudioFileName,
+    String? outputVideoFileName,
+    String? vocalInstrument,
+    String? accompanimentInstrument,
+    String? aiJobId,
+    String? aiJobStatus,
+    String? midiDownloadUrl,
+    String? resultUploadUrl,
   }) {
     return RecentProject(
       id: id ?? this.id,
@@ -84,6 +111,16 @@ class RecentProject {
           outputAudioDurationSeconds ?? this.outputAudioDurationSeconds,
       outputVideoDurationSeconds:
           outputVideoDurationSeconds ?? this.outputVideoDurationSeconds,
+      inputAudioFileName: inputAudioFileName ?? this.inputAudioFileName,
+      outputAudioFileName: outputAudioFileName ?? this.outputAudioFileName,
+      outputVideoFileName: outputVideoFileName ?? this.outputVideoFileName,
+      vocalInstrument: vocalInstrument ?? this.vocalInstrument,
+      accompanimentInstrument:
+          accompanimentInstrument ?? this.accompanimentInstrument,
+      aiJobId: aiJobId ?? this.aiJobId,
+      aiJobStatus: aiJobStatus ?? this.aiJobStatus,
+      midiDownloadUrl: midiDownloadUrl ?? this.midiDownloadUrl,
+      resultUploadUrl: resultUploadUrl ?? this.resultUploadUrl,
     );
   }
 
@@ -106,6 +143,15 @@ class RecentProject {
     'thumbnailUrl': thumbnailUrl,
     'outputAudioDurationSeconds': outputAudioDurationSeconds,
     'outputVideoDurationSeconds': outputVideoDurationSeconds,
+    'inputAudioFileName': inputAudioFileName,
+    'outputAudioFileName': outputAudioFileName,
+    'outputVideoFileName': outputVideoFileName,
+    'vocalInstrument': vocalInstrument,
+    'accompanimentInstrument': accompanimentInstrument,
+    'aiJobId': aiJobId,
+    'aiJobStatus': aiJobStatus,
+    'midiDownloadUrl': midiDownloadUrl,
+    'resultUploadUrl': resultUploadUrl,
   };
 
   factory RecentProject.fromJson(Map<String, dynamic> json) {
@@ -134,6 +180,15 @@ class RecentProject {
           ?.toInt(),
       outputVideoDurationSeconds: (json['outputVideoDurationSeconds'] as num?)
           ?.toInt(),
+      inputAudioFileName: json['inputAudioFileName'] as String?,
+      outputAudioFileName: json['outputAudioFileName'] as String?,
+      outputVideoFileName: json['outputVideoFileName'] as String?,
+      vocalInstrument: json['vocalInstrument'] as String?,
+      accompanimentInstrument: json['accompanimentInstrument'] as String?,
+      aiJobId: json['aiJobId'] as String?,
+      aiJobStatus: json['aiJobStatus'] as String?,
+      midiDownloadUrl: json['midiDownloadUrl'] as String?,
+      resultUploadUrl: json['resultUploadUrl'] as String?,
     );
   }
 }
@@ -146,11 +201,27 @@ class ProjectProvider extends ChangeNotifier {
 
   String projectName = '';
   String youtubeUrl = '';
+  String inputMode = 'audio_file';
+  String? uploadedVideoFileName;
+  String inputSourceType = 'audio_file';
+  String? inputAudioFileName;
+  String? inputAudioFileExtension;
+  String? inputAudioFilePath;
+  Uint8List? inputAudioFileBytes;
+  String? outputAudioFileName;
+  String? outputVideoFileName;
   bool copyrightConfirmed = false;
   bool preserveMelody = false;
   bool preserveVocal = false;
   String? preferredJangdan;
   List<String> preferredInstruments = [];
+  String? vocalInstrument;
+  String? accompanimentInstrument;
+  String? aiJobId;
+  String? aiJobStatus;
+  String? midiDownloadUrl;
+  String? resultUploadUrl;
+  String? outputAudioUrl;
   String? targetMood;
   String? conversionIntensity;
   int? mvLength;
@@ -171,14 +242,53 @@ class ProjectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setProjectName(String value) {
+    projectName = value;
+    notifyListeners();
+  }
+
+  void setCopyrightConfirmed(bool value) {
+    copyrightConfirmed = value;
+    notifyListeners();
+  }
+
+  void setInputAudioFile({
+    required String fileName,
+    String? extension,
+    String? path,
+    Uint8List? bytes,
+  }) {
+    inputAudioFileName = fileName;
+    inputAudioFileExtension = extension;
+    inputAudioFilePath = path;
+    inputAudioFileBytes = bytes;
+    notifyListeners();
+  }
+
   void resetCurrentProject() {
     projectName = '';
     youtubeUrl = '';
+    inputMode = 'audio_file';
+    uploadedVideoFileName = null;
+    inputSourceType = 'audio_file';
+    inputAudioFileName = null;
+    inputAudioFileExtension = null;
+    inputAudioFilePath = null;
+    inputAudioFileBytes = null;
+    outputAudioFileName = null;
+    outputVideoFileName = null;
     copyrightConfirmed = false;
     preserveMelody = false;
     preserveVocal = false;
     preferredJangdan = null;
     preferredInstruments = [];
+    vocalInstrument = null;
+    accompanimentInstrument = null;
+    aiJobId = null;
+    aiJobStatus = null;
+    midiDownloadUrl = null;
+    resultUploadUrl = null;
+    outputAudioUrl = null;
     targetMood = null;
     conversionIntensity = null;
     mvLength = null;
@@ -194,9 +304,28 @@ class ProjectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUploadInfo(String name, String url, bool confirmed) {
+  void setUploadInfo(
+    String name,
+    String url,
+    bool confirmed, {
+    String mode = 'url',
+    String? fileName,
+    String? audioFileName,
+    String? audioFileExtension,
+    String? audioFilePath,
+    Uint8List? audioFileBytes,
+  }) {
     projectName = name.trim();
     youtubeUrl = url.trim();
+    inputMode = mode;
+    uploadedVideoFileName = fileName;
+    inputSourceType = 'audio_file';
+    inputAudioFileName = audioFileName;
+    inputAudioFileExtension = audioFileExtension;
+    inputAudioFilePath = audioFilePath;
+    inputAudioFileBytes = audioFileBytes;
+    outputAudioFileName = buildOutputAudioFileName(projectName);
+    outputVideoFileName = null;
     copyrightConfirmed = confirmed;
     currentStatus = 'audio_setting';
     progress = 0.1;
@@ -212,6 +341,8 @@ class ProjectProvider extends ChangeNotifier {
     List<String>? instruments,
     String? mood,
     String? intensity,
+    String? vocalInstrumentValue,
+    String? accompanimentInstrumentValue,
   }) {
     preserveMelody = melody ?? preserveMelody;
     preserveVocal = vocal ?? preserveVocal;
@@ -219,6 +350,9 @@ class ProjectProvider extends ChangeNotifier {
     preferredInstruments = instruments ?? preferredInstruments;
     targetMood = mood ?? targetMood;
     conversionIntensity = intensity ?? conversionIntensity;
+    vocalInstrument = vocalInstrumentValue ?? vocalInstrument;
+    accompanimentInstrument =
+        accompanimentInstrumentValue ?? accompanimentInstrument;
     notifyListeners();
   }
 
@@ -254,6 +388,7 @@ class ProjectProvider extends ChangeNotifier {
       );
     } else if (status == 'completed') {
       pendingAudioResult = false;
+      outputVideoFileName ??= buildOutputVideoFileName(projectName);
       _upsertRecent(
         status: currentStatus,
         progress: progress,
@@ -278,6 +413,7 @@ class ProjectProvider extends ChangeNotifier {
     pendingAudioResult = false;
     outputAudioDurationSeconds ??= 192;
     outputVideoDurationSeconds = outputAudioDurationSeconds;
+    outputVideoFileName = buildOutputVideoFileName(projectName);
     if (saveToArchive) {
       _upsertRecent(
         status: 'completed',
@@ -343,7 +479,24 @@ class ProjectProvider extends ChangeNotifier {
     visualStyle = project.visualStyle;
     aspectRatio = project.aspectRatio;
     outputAudioDurationSeconds = project.outputAudioDurationSeconds;
+    outputAudioUrl = project.outputAudioUrl;
     outputVideoDurationSeconds = project.outputVideoDurationSeconds;
+    inputAudioFileName = project.inputAudioFileName;
+    inputAudioFileExtension = null;
+    inputAudioFilePath = null;
+    inputAudioFileBytes = null;
+    outputAudioFileName =
+        project.outputAudioFileName ??
+        buildOutputAudioFileName(project.projectName);
+    outputVideoFileName =
+        project.outputVideoFileName ??
+        buildOutputVideoFileName(project.projectName);
+    vocalInstrument = project.vocalInstrument;
+    accompanimentInstrument = project.accompanimentInstrument;
+    aiJobId = project.aiJobId;
+    aiJobStatus = project.aiJobStatus;
+    midiDownloadUrl = project.midiDownloadUrl;
+    resultUploadUrl = project.resultUploadUrl;
     pendingAudioResult = false;
     notifyListeners();
   }
@@ -367,11 +520,27 @@ class ProjectProvider extends ChangeNotifier {
     if (currentProjectId == id) {
       projectName = '';
       youtubeUrl = '';
+      inputMode = 'audio_file';
+      uploadedVideoFileName = null;
+      inputSourceType = 'audio_file';
+      inputAudioFileName = null;
+      inputAudioFileExtension = null;
+      inputAudioFilePath = null;
+      inputAudioFileBytes = null;
+      outputAudioFileName = null;
+      outputVideoFileName = null;
       copyrightConfirmed = false;
       preserveMelody = false;
       preserveVocal = false;
       preferredJangdan = null;
       preferredInstruments = [];
+      vocalInstrument = null;
+      accompanimentInstrument = null;
+      aiJobId = null;
+      aiJobStatus = null;
+      midiDownloadUrl = null;
+      resultUploadUrl = null;
+      outputAudioUrl = null;
       targetMood = null;
       conversionIntensity = null;
       mvLength = null;
@@ -419,13 +588,25 @@ class ProjectProvider extends ChangeNotifier {
       visualStyle: visualStyle,
       aspectRatio: aspectRatio,
       isCompleted: completed,
+      outputAudioUrl: outputAudioUrl,
       outputAudioDurationSeconds: outputAudioDurationSeconds,
       outputVideoDurationSeconds: outputVideoDurationSeconds,
+      inputAudioFileName: inputAudioFileName,
+      outputAudioFileName:
+          outputAudioFileName ?? buildOutputAudioFileName(projectName),
+      outputVideoFileName:
+          outputVideoFileName ?? buildOutputVideoFileName(projectName),
+      vocalInstrument: vocalInstrument,
+      accompanimentInstrument: accompanimentInstrument,
+      aiJobId: aiJobId,
+      aiJobStatus: aiJobStatus,
+      midiDownloadUrl: midiDownloadUrl,
+      resultUploadUrl: resultUploadUrl,
     );
     if (index >= 0) {
       recentProjects[index] = project.copyWith(
         isFavorite: previous!.isFavorite,
-        outputAudioUrl: previous.outputAudioUrl,
+        outputAudioUrl: outputAudioUrl ?? previous.outputAudioUrl,
         outputVideoUrl: previous.outputVideoUrl,
         thumbnailUrl: previous.thumbnailUrl,
         outputAudioDurationSeconds: previous.outputAudioDurationSeconds,
@@ -458,5 +639,30 @@ class ProjectProvider extends ChangeNotifier {
       default:
         return '준비';
     }
+  }
+
+  static String buildOutputAudioFileName(String projectName) {
+    final baseName = sanitizeFileBaseName(projectName);
+    return '${baseName ?? 'gugakify_result'}.wav';
+  }
+
+  static String buildOutputVideoFileName(String projectName) {
+    final baseName = sanitizeFileBaseName(projectName);
+    return '${baseName ?? 'gugakify_mv_result'}.mp4';
+  }
+
+  static String? sanitizeFileBaseName(String name) {
+    final withoutOutputExtension = name.trim().replaceFirst(
+      RegExp(r'\.(?:wav|mp4)$', caseSensitive: false),
+      '',
+    );
+    final sanitized = withoutOutputExtension
+        .replaceAll(RegExp(r'[/\\:*?"<>|]'), '_')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+    if (sanitized.isEmpty) return null;
+    return sanitized.length > 80
+        ? sanitized.substring(0, 80).trimRight()
+        : sanitized;
   }
 }

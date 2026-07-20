@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/widgets/hanji_background.dart';
 import '../../../../shared/widgets/mobile_shell.dart';
 
 class IntroScreen extends StatefulWidget {
@@ -36,26 +35,31 @@ class _IntroScreenState extends State<IntroScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: MobileShell(
-        child: HanjiBackground(
-          baseColor: AppColors.background,
-          opacity: 0.03,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
+        useSafeArea: false,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(
               child: Image.asset(
                 'assets/images/intro_hero.png',
-                fit: BoxFit.contain,
-                errorBuilder: (_, error, stackTrace) => const Text(
-                  'Gugakify',
-                  style: TextStyle(
-                    color: AppColors.primaryPurple,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w800,
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                errorBuilder: (_, error, stackTrace) => const ColoredBox(
+                  color: AppColors.background,
+                  child: Center(
+                    child: Text(
+                      'Gugakify',
+                      style: TextStyle(
+                        color: AppColors.primaryPurple,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

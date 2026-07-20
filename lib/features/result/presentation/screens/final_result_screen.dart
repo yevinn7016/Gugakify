@@ -28,10 +28,12 @@ class FinalResultScreen extends StatelessWidget {
     final projectName = project.projectName.isEmpty
         ? '새 프로젝트'
         : project.projectName;
-    final instruments = project.preferredInstruments.isEmpty
-        ? '자동 추천'
-        : project.preferredInstruments.map(_instrumentLabel).join(', ');
-
+    final outputAudioFileName =
+        project.outputAudioFileName ??
+        ProjectProvider.buildOutputAudioFileName(project.projectName);
+    final outputVideoFileName =
+        project.outputVideoFileName ??
+        ProjectProvider.buildOutputVideoFileName(project.projectName);
     return GugakifyAppScaffold(
       backgroundColor: AppColors.background,
       padding: const EdgeInsets.symmetric(horizontal: 22),
@@ -49,25 +51,29 @@ class FinalResultScreen extends StatelessWidget {
               const _CompletionHeroCard(),
               const SizedBox(height: 16),
               _MediaSection(
-                title: '전통 MV',
-                description: '전체 음원 길이에 맞춘 전통 영상 결과',
+                title: '전통 화풍 MV',
+                description: '입력 영상을 전통 화풍으로 변환한 결과',
                 icon: Icons.movie_creation_outlined,
                 child: MockVideoPlayer(
-                  title: '생성된 전통 MV',
+                  title: outputVideoFileName,
                   duration: videoDuration,
                   aspectRatio: ratio,
                   onDownload: () => ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('다운로드할 MV가 아직 없습니다.')),
+                    SnackBar(
+                      content: Text(
+                        '다운로드할 MV가 아직 없습니다. ($outputVideoFileName)',
+                      ),
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
               _MediaSection(
                 title: '국악 음원',
-                description: '전통 악기와 장단이 반영된 음원 결과',
+                description: '원곡 멜로디를 국악기 음색으로 재연주한 결과',
                 icon: Icons.graphic_eq_rounded,
                 child: MockAudioPlayer(
-                  title: '변환된 국악 음원',
+                  title: outputAudioFileName,
                   duration: audioDuration,
                   onDownload: () => ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('다운로드할 음원이 아직 없습니다.')),
@@ -82,10 +88,6 @@ class FinalResultScreen extends StatelessWidget {
                     value: _visualStyleLabel(project.visualStyle),
                   ),
                   _SummaryItem(
-                    label: '연출 방식',
-                    value: _effectLabel(project.effectMode),
-                  ),
-                  _SummaryItem(
                     label: '화면 비율',
                     value: project.aspectRatio ?? '16:9',
                   ),
@@ -94,32 +96,25 @@ class FinalResultScreen extends StatelessWidget {
                     value: formatDuration(videoDuration),
                   ),
                   _SummaryItem(
-                    label: '장단',
-                    value: _jangdanLabel(project.preferredJangdan),
+                    label: '보컬 악기',
+                    value: _instrumentLabel(project.vocalInstrument),
                   ),
                   _SummaryItem(
-                    label: '분위기',
-                    value: _moodLabel(project.targetMood),
+                    label: '반주 악기',
+                    value: _instrumentLabel(project.accompanimentInstrument),
                   ),
-                  const _SummaryItem(label: 'BPM', value: '128'),
-                  _SummaryItem(label: '악기', value: instruments),
-                  _SummaryItem(
-                    label: '변환 방향',
-                    value: _intensityLabel(project.conversionIntensity),
+                  const _SummaryItem(
+                    label: '음원 처리',
+                    value: '보컬/반주 분리 → MIDI 생성 → 악기별 렌더링',
                   ),
-                  _SummaryItem(
-                    label: '선율 유지',
-                    value: project.preserveMelody ? '켜짐' : '꺼짐',
+                  _SummaryItem(label: '음원 파일', value: outputAudioFileName),
+                  _SummaryItem(label: 'MV 파일', value: outputVideoFileName),
+                  const _SummaryItem(
+                    label: 'MV 처리',
+                    value: '프레임 단위 스타일 변환 → 오디오 병합',
                   ),
-                  _SummaryItem(
-                    label: '보컬 유지',
-                    value: project.preserveVocal ? '켜짐' : '꺼짐',
-                  ),
-                  const _SummaryItem(label: '생성 방식', value: '전체 음원 기반 영상 생성'),
                 ],
               ),
-              const SizedBox(height: 16),
-              const _EffectSummaryCard(),
               const SizedBox(height: 24),
               Row(
                 children: [
@@ -150,98 +145,31 @@ String _visualStyleLabel(String? value) {
   switch (value) {
     case 'sumukhwa':
       return '수묵화';
-    case 'chaesaekhwa':
-      return '채색화';
-    case 'sumukh_damchae':
-      return '수묵담채화';
-    case 'palace_painting':
-      return '궁중채색화';
-    case 'landscape':
-      return '산수화';
+    case 'minhwa':
+      return '민화';
     case null:
-      return '수묵담채화';
+      return '수묵화';
     default:
       return value;
   }
 }
 
-String _effectLabel(String? value) {
+String _instrumentLabel(String? value) {
   switch (value) {
-    case 'calm':
-      return '잔잔하게';
-    case 'balanced':
-      return '균형 있게';
-    case 'dynamic':
-      return '역동적으로';
-    case null:
-      return '역동적으로';
-    default:
-      return value;
-  }
-}
-
-String _jangdanLabel(String? value) {
-  switch (value) {
-    case 'jajinmori':
-      return '자진모리';
-    case 'jungmori':
-      return '중모리';
-    case 'gutgeori':
-      return '굿거리';
-    case 'semachi':
-      return '세마치';
-    case 'auto':
-    case null:
-      return '자동 추천';
-    default:
-      return value;
-  }
-}
-
-String _instrumentLabel(String value) {
-  switch (value) {
+    case 'geomungo':
+      return '거문고';
     case 'gayageum':
       return '가야금';
     case 'haegeum':
       return '해금';
     case 'daegeum':
       return '대금';
-    case 'janggu':
-      return '장구';
-    case 'samulnori':
-      return '사물놀이';
-    default:
-      return value;
-  }
-}
-
-String _moodLabel(String? value) {
-  switch (value) {
-    case 'energetic':
-      return '신나는';
-    case 'calm':
-      return '잔잔한';
-    case 'grand':
-      return '웅장한';
-    case 'dreamy':
-      return '몽환적인';
-    case 'auto':
+    case 'piri':
+      return '피리';
+    case 'danso':
+      return '단소';
     case null:
-      return '자동 추천';
-    default:
-      return value;
-  }
-}
-
-String _intensityLabel(String? value) {
-  switch (value) {
-    case 'original_focused':
-      return '원곡 중심';
-    case 'gugak_focused':
-      return '국악 중심';
-    case 'balanced':
-    case null:
-      return '균형 있게';
+      return '선택 전';
     default:
       return value;
   }
@@ -439,7 +367,7 @@ class _CompletionHeroCard extends StatelessWidget {
               const _StatusPill(label: 'Gugakify Result'),
               const SizedBox(height: 14),
               const Text(
-                '국악 음원과 전통 MV가\n완성됐어요',
+                '전통 화풍 MV가\n완성됐어요',
                 style: TextStyle(
                   color: AppColors.textBlack,
                   fontSize: 21,
@@ -449,7 +377,7 @@ class _CompletionHeroCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                '음악의 장단과 분위기에 맞춰 전통 미학 기반 영상과 국악 스타일 음원을 생성했습니다.',
+                '입력 영상을 수묵화 또는 민화 스타일로 변환한 결과입니다. 국악 스타일 음원과 전통 화풍 영상을 함께 확인할 수 있어요.',
                 style: TextStyle(
                   color: AppColors.textMuted,
                   fontSize: 13,
@@ -463,8 +391,8 @@ class _CompletionHeroCard extends StatelessWidget {
                 runSpacing: 8,
                 children: [
                   _MetaPill(label: '전체 음원 기반'),
-                  _MetaPill(label: '전통 MV'),
-                  _MetaPill(label: '장단 반응형 효과'),
+                  _MetaPill(label: '전통 화풍 MV'),
+                  _MetaPill(label: '프레임 스타일 변환'),
                 ],
               ),
             ],
@@ -649,6 +577,8 @@ class _SummaryTile extends StatelessWidget {
   }
 }
 
+// Retained for compatibility with archived mock results; not shown currently.
+// ignore: unused_element
 class _EffectSummaryCard extends StatelessWidget {
   const _EffectSummaryCard();
 

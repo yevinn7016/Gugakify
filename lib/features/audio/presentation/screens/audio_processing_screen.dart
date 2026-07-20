@@ -18,17 +18,22 @@ class AudioProcessingScreen extends StatefulWidget {
 class _AudioProcessingScreenState extends State<AudioProcessingScreen> {
   Timer? _timer;
   final _steps = const [
-    '음원 전처리',
-    'BPM·분위기 분석',
+    '음원 업로드 확인',
     '보컬/반주 분리',
-    '국악 프롬프트 생성',
-    'MusicGen 생성',
-    '완료',
+    '파트별 자동 채보',
+    '악기별 MIDI 정제',
+    'MIDI 파일 생성',
+    '결과 음원 준비',
   ];
 
   @override
   void initState() {
     super.initState();
+    // TODO(backend integration point): poll our backend for queued ->
+    // separating -> transcribing -> processing_midi ->
+    // waiting_for_manual_render -> result_uploaded -> delivering -> delivered.
+    // job_id and MIDI/result upload URLs are backend-managed; AI_API_KEY must
+    // never be stored in or sent by the Flutter client.
     _timer = Timer.periodic(const Duration(milliseconds: 250), (_) {
       final provider = context.read<ProjectProvider>();
       final next = provider.progress + 0.05;
@@ -313,7 +318,7 @@ class _ProcessingCard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Text(
-                'BPM, 분위기, 보컬과 반주를 분석해 국악 장단과 악기 구성으로 재해석하는 중입니다.',
+                'AI가 보컬과 반주를 분리하고, 선택한 국악기에 맞게 MIDI를 정제하고 있어요.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.textMuted,
@@ -713,10 +718,9 @@ class _WaitingGuideCard extends StatelessWidget {
             size: 18,
           ),
           SizedBox(width: 9),
-          SizedBox(
-            width: 258,
+          Expanded(
             child: Text(
-              '변환이 완료되면 자동으로 결과 화면으로 이동합니다. 창을 닫지 말고 잠시만 기다려주세요.',
+              '시연 환경에서는 준비된 결과 음원으로 빠르게 확인할 수 있어요.',
               style: TextStyle(
                 color: AppColors.textMuted,
                 fontSize: 12,

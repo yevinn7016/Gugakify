@@ -13,14 +13,25 @@ class ProjectRepository {
     if (raw == null || raw.isEmpty) {
       return [];
     }
-    final decoded = jsonDecode(raw);
-    if (decoded is! List) {
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(raw);
+    } on FormatException {
       return [];
     }
-    return decoded
-        .whereType<Map<String, dynamic>>()
-        .map(RecentProject.fromJson)
-        .toList();
+    if (decoded is! List) return [];
+
+    final projects = <RecentProject>[];
+    for (final item in decoded) {
+      if (item is! Map<String, dynamic>) continue;
+      try {
+        projects.add(RecentProject.fromJson(item));
+      } on Object {
+        // Ignore a malformed legacy entry without preventing the app from
+        // loading the remaining recent projects.
+      }
+    }
+    return projects;
   }
 
   Future<void> saveRecentProjects(List<RecentProject> projects) async {

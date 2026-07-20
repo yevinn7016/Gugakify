@@ -7,34 +7,17 @@ import '../../../../features/app_state/project_state.dart';
 import '../../../../shared/widgets/gugakify_app_scaffold.dart';
 import '../../../../shared/widgets/primary_lavender_button.dart';
 
-const _jangdanOptions = {
-  'auto': '자동 추천',
-  'jajinmori': '자진모리',
-  'jungmori': '중모리',
-  'gutgeori': '굿거리',
-  'semachi': '세마치',
-};
-
 const _instrumentOptions = {
   'gayageum': '가야금',
+  'geomungo': '거문고',
   'haegeum': '해금',
   'daegeum': '대금',
-  'janggu': '장구',
-  'samulnori': '사물놀이',
 };
-
-const _moodOptions = {
-  'auto': '자동 추천',
-  'energetic': '신나는',
-  'calm': '잔잔한',
-  'grand': '웅장한',
-  'dreamy': '몽환적인',
-};
-
-const _intensityOptions = {
-  'original_focused': '원곡 중심',
-  'balanced': '균형 있게',
-  'gugak_focused': '국악 중심',
+const _vocalInstrumentOptions = {
+  'haegeum': '해금',
+  'danso': '단소',
+  'daegeum': '대금',
+  'piri': '피리',
 };
 
 class AudioConvertSettingScreen extends StatelessWidget {
@@ -55,69 +38,70 @@ class AudioConvertSettingScreen extends StatelessWidget {
               _AudioHeader(title: title, onBack: () => context.go('/upload')),
               const SizedBox(height: 20),
               _SectionCard(
-                title: '변환 방식',
-                caption: '원곡의 어느 부분을 살릴지 선택해주세요',
+                title: '국악기로 다시 연주할 파트를 선택해주세요',
+                caption:
+                    '업로드한 음원을 보컬과 반주로 나눈 뒤, 선택한 국악기에 맞게 MIDI를 정제해 결과 음원을 준비합니다.',
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _FeatureToggleCard(
-                      icon: Icons.graphic_eq_rounded,
-                      title: '원곡 선율 유지',
-                      description: '원곡의 멜로디 흐름을 최대한 살려요',
-                      value: project.preserveMelody,
-                      onChanged: (value) =>
-                          project.setAudioSettings(melody: value),
-                    ),
-                    const SizedBox(height: 10),
-                    _FeatureToggleCard(
-                      icon: Icons.mic_none_rounded,
-                      title: '보컬 유지',
-                      description: '보컬 느낌을 유지한 채 국악 음색을 더해요',
-                      value: project.preserveVocal,
-                      onChanged: (value) =>
-                          project.setAudioSettings(vocal: value),
+                    const Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _InfoBadge(label: '보컬 MIDI'),
+                        _InfoBadge(label: '반주 MIDI'),
+                        _InfoBadge(label: '국악기 렌더링'),
+                      ],
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 14),
               _OptionSection(
-                title: '국악 변환 방향',
-                options: _intensityOptions,
-                selectedValues: {project.conversionIntensity ?? 'balanced'},
-                onTap: (value) => project.setAudioSettings(intensity: value),
-              ),
-              _OptionSection(
-                title: '장단 선택',
-                options: _jangdanOptions,
-                selectedValues: {project.preferredJangdan ?? 'auto'},
-                onTap: (value) => project.setAudioSettings(jangdan: value),
-              ),
-              _OptionSection(
-                title: '악기 구성',
-                caption: '여러 개를 선택할 수 있어요',
-                options: _instrumentOptions,
-                selectedValues: project.preferredInstruments.toSet(),
-                onTap: (value) {
-                  final next = [...project.preferredInstruments];
-                  next.contains(value) ? next.remove(value) : next.add(value);
-                  project.setAudioSettings(instruments: next);
+                title: '보컬 멜로디 악기',
+                caption: '보컬 멜로디를 어떤 국악기로 변환할까요?',
+                options: _vocalInstrumentOptions,
+                selectedValues: {
+                  if (project.vocalInstrument != null) project.vocalInstrument!,
                 },
+                onTap: (value) => project.setAudioSettings(
+                  vocalInstrumentValue: value,
+                  melody: true,
+                ),
               ),
               _OptionSection(
-                title: '분위기',
-                options: _moodOptions,
-                selectedValues: {project.targetMood ?? 'auto'},
-                onTap: (value) => project.setAudioSettings(mood: value),
+                title: '반주 악기',
+                caption: '반주를 어떤 국악기로 변환할까요?',
+                options: _instrumentOptions,
+                selectedValues: {
+                  if (project.accompanimentInstrument != null)
+                    project.accompanimentInstrument!,
+                },
+                onTap: (value) => project.setAudioSettings(
+                  accompanimentInstrumentValue: value,
+                ),
               ),
               _SelectionSummaryCard(project: project),
               const SizedBox(height: 24),
               PrimaryLavenderButton(
-                label: '국악 변환 시작',
+                label: '국악 음원 변환 시작',
                 icon: const Icon(Icons.auto_awesome_rounded, size: 19),
-                onPressed: () {
-                  project.updateStatus('audio_processing', newProgress: 0);
-                  context.go('/audio/processing');
-                },
+                onPressed:
+                    project.vocalInstrument != null &&
+                        project.accompanimentInstrument != null &&
+                        project.projectName.isNotEmpty
+                    ? () {
+                        // TODO(backend integration point): send audio,
+                        // vocal_instrument and accompaniment_instrument to our
+                        // backend. The backend creates POST /jobs with X-API-Key.
+                        // AI_API_KEY must never be included in Flutter.
+                        project.updateStatus(
+                          'audio_processing',
+                          newProgress: 0,
+                        );
+                        context.go('/audio/processing');
+                      }
+                    : null,
               ),
             ],
           ),
@@ -371,6 +355,8 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
+// Retained for compatibility with the established design component set.
+// ignore: unused_element
 class _FeatureToggleCard extends StatelessWidget {
   const _FeatureToggleCard({
     required this.icon,
@@ -467,6 +453,32 @@ class _FeatureToggleCard extends StatelessWidget {
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoBadge extends StatelessWidget {
+  const _InfoBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+      decoration: BoxDecoration(
+        color: AppColors.paleLavender.withValues(alpha: .72),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: AppColors.lightPurple),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: AppColors.deepInkPurple,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -576,15 +588,10 @@ class _SelectionSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final jangdan = _jangdanOptions[project.preferredJangdan ?? 'auto']!;
-    final mood = _moodOptions[project.targetMood ?? 'auto']!;
-    final intensity =
-        _intensityOptions[project.conversionIntensity ?? 'balanced']!;
-    final instruments = project.preferredInstruments.isEmpty
-        ? '자동 추천'
-        : project.preferredInstruments
-              .map((value) => _instrumentOptions[value] ?? value)
-              .join(', ');
+    final accompaniment = project.accompanimentInstrument == null
+        ? '선택 전'
+        : _instrumentOptions[project.accompanimentInstrument] ??
+              project.accompanimentInstrument!;
 
     return _SectionCard(
       title: '선택 요약',
@@ -592,17 +599,19 @@ class _SelectionSummaryCard extends StatelessWidget {
       child: Column(
         children: [
           _SummaryRow(
-            label: '선율 유지',
-            value: project.preserveMelody ? '켜짐' : '꺼짐',
+            label: '입력 파일',
+            value: project.inputAudioFileName ?? '선택 전',
           ),
           _SummaryRow(
-            label: '보컬 유지',
-            value: project.preserveVocal ? '켜짐' : '꺼짐',
+            label: '보컬 악기',
+            value: _vocalInstrumentOptions[project.vocalInstrument] ?? '선택 전',
           ),
-          _SummaryRow(label: '변환 방향', value: intensity),
-          _SummaryRow(label: '장단', value: jangdan),
-          _SummaryRow(label: '악기', value: instruments),
-          _SummaryRow(label: '분위기', value: mood, isLast: true),
+          _SummaryRow(label: '반주 악기', value: accompaniment),
+          const _SummaryRow(
+            label: '처리 방식',
+            value: '보컬/반주 분리 → MIDI 생성 → 악기별 정제 → 결과 음원 준비',
+            isLast: true,
+          ),
         ],
       ),
     );
