@@ -30,15 +30,6 @@ class MusicAnalysis(Base):
     genre = Column(String(100))
     analysis_json = Column(Text)
 
-class GugakConversion(Base):
-    __tablename__ = "gugak_conversions"
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    project_id = Column(BigInteger, nullable=False)
-    converted_audio_url = Column(Text)
-    rhythm_type = Column(String(100))
-    main_instruments = Column(Text)
-    created_at = Column(TIMESTAMP, server_default=func.now())
-
 class MvGeneration(Base):
     __tablename__ = "mv_generations"
     id = Column(BigInteger, primary_key=True, autoincrement=True)
@@ -62,4 +53,14 @@ class LibraryItem(Base):
     user_id = Column(BigInteger, nullable=False)
     project_id = Column(BigInteger, nullable=False)
     is_favorite = Column(Boolean, default=False)
+    created_at = Column(TIMESTAMP, server_default=func.now())
+
+class GugakConversion(Base):
+    __tablename__ = "gugak_conversions"
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    project_id = Column(BigInteger, nullable=False)
+    job_id = Column(String(100), nullable=True)
+    converted_audio_url = Column(Text)
+    rhythm_type = Column(String(100))
+    main_instruments = Column(Text)
     created_at = Column(TIMESTAMP, server_default=func.now())

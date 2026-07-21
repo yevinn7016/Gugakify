@@ -3,6 +3,10 @@ from database import engine, Base
 from auth import router as auth_router
 from routers.upload import router as upload_router
 from routers.library import router as library_router
+from routers.arrangements import router as arrangements_router
+from routers.mv_conversion import router as mv_router
+from routers.video_upload import router as video_router
+from routers.mv_process import router as mv_process_router
 
 app = FastAPI()
 
@@ -13,8 +17,11 @@ Base.metadata.create_all(bind=engine)
 app.include_router(auth_router)
 app.include_router(upload_router)
 app.include_router(library_router)
+app.include_router(arrangements_router)
+app.include_router(mv_router)
+app.include_router(video_router)
+app.include_router(mv_process_router)
 
 @app.get("/")
 def root():
     return {"message": "Gugakify API 서버 작동 중!"}
-    
