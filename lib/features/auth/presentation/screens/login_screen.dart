@@ -62,89 +62,110 @@ class LoginScreen extends StatelessWidget {
                   bottom: 0,
                   child: _MountainSilhouette(),
                 ),
-                SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(22, 0, 22, 30),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 72),
-                      Image.asset(
-                        'assets/icons/gugakify_logo_full.png',
-                        width: 172,
-                        errorBuilder: (_, error, stackTrace) => const Text(
-                          'Gugakify',
-                          style: TextStyle(
-                            color: AppColors.primaryPurple,
-                            fontSize: 30,
-                            fontWeight: FontWeight.w800,
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(22, 16, 22, 16),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight - 32,
+                        ),
+                        child: IntrinsicHeight(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Spacer(flex: 3),
+                              Image.asset(
+                                'assets/icons/gugakify_logo_full.png',
+                                width: 172,
+                                errorBuilder: (_, error, stackTrace) =>
+                                    const Text(
+                                      'Gugakify',
+                                      style: TextStyle(
+                                        color: AppColors.primaryPurple,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                              ),
+                              const SizedBox(height: 14),
+                              const Text(
+                                'AI로 재해석하는 국악 스타일 콘텐츠',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: AppColors.textMuted,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.4,
+                                ),
+                              ),
+                              const Spacer(flex: 4),
+                              _LoginCard(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      '나만의 국악 스타일 변환을\n시작해보세요',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: AppColors.textBlack,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.4,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 22),
+                                    _LoginButton(
+                                      label: '구글 로그인',
+                                      icon: SvgPicture.asset(
+                                        'assets/icons/google_logo.svg',
+                                        width: 20,
+                                        height: 20,
+                                        placeholderBuilder: (_) =>
+                                            const Icon(
+                                              Icons.g_mobiledata_rounded,
+                                            ),
+                                      ),
+                                      onPressed: () => _enter(
+                                        context,
+                                        auth.signInWithGoogle,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _LoginButton(
+                                      label: '비회원으로 둘러보기',
+                                      icon: const Icon(
+                                        Icons.person_off_outlined,
+                                        size: 20,
+                                        color: AppColors.primaryPurple,
+                                      ),
+                                      muted: true,
+                                      onPressed: () => _enter(
+                                        context,
+                                        auth.continueAsGuest,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    const Text(
+                                      '로그인하면 프로젝트를 저장하고 다시 확인할 수 있어요',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: AppColors.textMuted,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Spacer(flex: 1),
+                            ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 14),
-                      const Text(
-                        'AI로 재해석하는 국악 스타일 콘텐츠',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          height: 1.4,
-                        ),
-                      ),
-                      const SizedBox(height: 54),
-                      _LoginCard(
-                        child: Column(
-                          children: [
-                            const Text(
-                              '나만의 국악 스타일 변환을\n시작해보세요',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.textBlack,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                height: 1.4,
-                              ),
-                            ),
-                            const SizedBox(height: 22),
-                            _LoginButton(
-                              label: '구글 로그인',
-                              icon: SvgPicture.asset(
-                                'assets/icons/google_logo.svg',
-                                width: 20,
-                                height: 20,
-                                placeholderBuilder: (_) =>
-                                    const Icon(Icons.g_mobiledata_rounded),
-                              ),
-                              onPressed: () =>
-                                  _enter(context, auth.signInWithGoogle),
-                            ),
-                            const SizedBox(height: 12),
-                            _LoginButton(
-                              label: '비회원으로 둘러보기',
-                              icon: const Icon(
-                                Icons.person_off_outlined,
-                                size: 20,
-                                color: AppColors.primaryPurple,
-                              ),
-                              muted: true,
-                              onPressed: () =>
-                                  _enter(context, auth.continueAsGuest),
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              '로그인하면 프로젝트를 저장하고 다시 확인할 수 있어요',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.textMuted,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                height: 1.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ],
             ),
