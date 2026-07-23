@@ -15,8 +15,22 @@ class LoginScreen extends StatelessWidget {
     BuildContext context,
     Future<void> Function() action,
   ) async {
-    await action();
-    if (context.mounted) context.go('/home');
+    try {
+      await action();
+      if (context.mounted) context.go('/home');
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            error is Exception
+                ? error.toString()
+                : '로그인에 실패했습니다. 잠시 후 다시 시도해주세요.',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   @override

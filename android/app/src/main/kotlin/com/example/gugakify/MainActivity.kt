@@ -1,4 +1,4 @@
-package com.example.gugakify
+package com.gugakify
 
 import io.flutter.embedding.android.FlutterActivity
 
