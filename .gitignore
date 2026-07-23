@@ -83,3 +83,6 @@ gugakify.iml
 linux/
 macos/
 windows/
+api_config.dart
+google-services.json
+auth_service_test.dart
