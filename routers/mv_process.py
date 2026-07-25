@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from models import MusicProject, GugakConversion
+from dotenv import load_dotenv
 import cloudinary.uploader
 import httpx
 import ffmpeg
@@ -9,9 +10,11 @@ import tempfile
 import os
 import uuid
 
+load_dotenv()
+
 router = APIRouter()
 
-AI_MV_SERVER = "https://guackify-ai-mv.onrender.com"
+AI_MV_SERVER = os.getenv("AI_MV_SERVER")
 
 @router.post("/projects/{project_id}/process-mv")
 async def process_mv(

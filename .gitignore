@@ -1,13 +1,43 @@
+# Python
 venv/
+.venv/
 __pycache__/
-firebase_key.json
-.env
 *.pyc
+*.pyo
+
+# Python test / lint / type-check caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment variables (never commit real values)
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# Firebase Admin service account keys (server-side secret, never commit)
+firebase_key.json
+google.json
+serviceAccountKey.json
+*-firebase-adminsdk-*.json
+firebase_options_private.dart
+
+# Firebase client config
+# 이 저장소는 google-services.json을 커밋하지 않는 방식(개발자별 로컬 생성)을 이미 사용 중 -> GoogleService-Info.plist도 동일하게 취급
+google-services.json
+GoogleService-Info.plist
+
+# Certificates / private keys
+*.pem
+*.key
+*.p12
+*.pfx
 
 # Miscellaneous
 *.class
 *.log
-*.pyc
 *.swp
 .DS_Store
 .atom/
@@ -23,24 +53,24 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
-build/
-.dart_tool/
-.idea/
-.vscode/
+gugakify.iml
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
 #.vscode/
+.vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
 /build/
+build/
 /coverage/
 
 # Symbolication related
@@ -63,32 +93,19 @@ ios/Flutter/Flutter.podspec
 ios/Pods/
 
 # macOS
+macos/
 macos/Flutter/ephemeral/
 macos/Pods/
 
 # Linux
+linux/
 linux/flutter/ephemeral/
 
 # Windows
+windows/
 windows/flutter/ephemeral/
 
-# Secrets
-.env
-*.env
-firebase_options_private.dart
-serviceAccountKey.json
-EOF
-
+# 프로젝트별 로컬 전용 파일 (개발자마다 다르게 설정하는 값이라 커밋하지 않음)
 design/
-.DS_Store
-.dart_tool/
-.flutter-plugins-dependencies
-.idea/
-build/
-gugakify.iml
-linux/
-macos/
-windows/
 api_config.dart
-google-services.json
 auth_service_test.dart

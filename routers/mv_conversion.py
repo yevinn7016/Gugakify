@@ -1,13 +1,17 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from database import get_db
 from models import MvGeneration
+from dotenv import load_dotenv
 import httpx
+
+load_dotenv()
 
 router = APIRouter()
 
-AI_MV_SERVER = "https://gugakify-mv-ai.onrender.com"
-MV_API_KEY = "329bc0832be1e351c1e4f047c37a0ae951f5c816dee7bada61300b5b6d22f87c"
+AI_MV_SERVER = os.getenv("AI_MV_SERVER")
+MV_API_KEY = os.getenv("MV_API_KEY")
 
 @router.post("/api/mvs")
 async def request_mv_conversion(

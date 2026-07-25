@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from auth import router as auth_router
 from routers.upload import router as upload_router
@@ -10,6 +11,15 @@ from routers.mv_process import router as mv_process_router
 from routers.status import router as status_router
 
 app = FastAPI()
+
+# 로컬 개발용 CORS 설정 (Flutter web 등 다른 origin에서 오는 요청 허용)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # DB 테이블 자동 생성
 Base.metadata.create_all(bind=engine)

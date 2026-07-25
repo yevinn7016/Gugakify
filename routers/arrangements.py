@@ -1,14 +1,18 @@
+import os
 from fastapi import APIRouter, File, Form, Header, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from fastapi import Depends
 from database import get_db
 from models import GugakConversion, MusicProject
+from dotenv import load_dotenv
 import cloudinary.uploader
 import uuid
 
+load_dotenv()
+
 router = APIRouter()
 
-BACKEND_TOKEN = "gugakify-backend-2026"  # AI 담당자에게 전달한 토큰과 반드시 일치해야 함
+BACKEND_TOKEN = os.getenv("BACKEND_TOKEN")  # AI 담당자에게 전달한 토큰과 반드시 일치해야 함
 
 @router.post("/api/arrangements/result")
 async def receive_ai_result(
