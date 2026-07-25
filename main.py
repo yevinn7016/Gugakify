@@ -7,6 +7,7 @@ from routers.arrangements import router as arrangements_router
 from routers.mv_conversion import router as mv_router
 from routers.video_upload import router as video_router
 from routers.mv_process import router as mv_process_router
+from routers.status import router as status_router
 
 app = FastAPI()
 
@@ -21,6 +22,7 @@ app.include_router(arrangements_router)
 app.include_router(mv_router)
 app.include_router(video_router)
 app.include_router(mv_process_router)
+app.include_router(status_router)
 
 @app.get("/")
 def root():
