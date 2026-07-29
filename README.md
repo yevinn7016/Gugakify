@@ -1,327 +1,58 @@
-# Guackify MV AI Server
+# Guackify
 
-Guackify MV AI Server is a FastAPI server that converts an input music video into a Korean traditional visual style video.
+Guackify는 입력 MV를 한국 전통 화풍으로 변환하는 FastAPI 기반 시스템입니다. 특히 수묵화와 민화 스타일을 적용해, 영상의 시각적 분위기를 전통회화처럼 재해석할 수 있도록 설계되었습니다.
 
-Current supported styles:
+## 프로젝트 소개
 
-- `sumukhwa`: Korean ink wash style with thin, dark outlines and monochrome ink texture
-- `minhwa`: Korean folk painting style with thin, dark outlines, toned-down hanji background, and emphasized red, green, blue, black, and yellow colors
+이 프로젝트는 영상 처리와 스타일 변환을 결합하여, 사용자가 업로드한 음악 비디오(MV)를 한국 전통 미술 스타일로 재구성하는 데 초점을 두고 있습니다. 기존의 AI 모델 기반 접근이 실패한 경험을 바탕으로, OpenCV 기반의 deterministic한 스타일 변환 파이프라인을 채택하여 실험 가능성과 재현성을 높였습니다.
 
-The user sends an MV URL and a style type. The server downloads the video, extracts frames, applies the selected style, rebuilds the video, merges the original audio, and returns the output video URL.
+## 지원 스타일
 
-## Current Flow
+### 1. 수묵화 스타일 (Sumukhwa)
+수묵화 스타일은 잉크의 흐름과 한지 질감을 강조하는 방식으로 구현되었습니다. 프레임 단위로 처리하면서도, 잉크 선과 번짐, 어두운 윤곽선, 종이 질감을 함께 결합해 전통 수묵화의 분위기를 재현합니다.
 
-1. Receive a video URL and style type.
-2. Download the input MV.
-3. Extract video metadata, frames, and optional audio.
-4. Select the style adapter.
-   - `styleType=sumukhwa` -> `opencv_ink`
-   - `styleType=minhwa` -> `opencv_minhwa`
-5. Apply style conversion frame by frame.
-6. Rebuild the video at the original FPS and resolution.
-7. Merge the original audio.
-8. Return output video and thumbnail URLs.
+주요 변환 방식:
+- 그레이스케일 변환으로 수묵의 흑백 기반 구조를 형성
+- CLAHE와 bilateral filtering으로 대비와 선명도를 조정
+- adaptive threshold와 Canny edge detection으로 잉크 선을 생성
+- Gaussian blur와 blend를 통해 먹의 흐름과 번짐 효과를 구현
+- paper texture와 결합해 한지 같은 배경감을 부여
 
-## Project Layout
+### 2. 민화 스타일 (Minhwa)
+민화 스타일은 전통 민화에서 느껴지는 색채감, 단순화된 형태, 붓질 느낌을 살리도록 설계되었습니다. 색을 단순화하고 윤곽선을 강조한 뒤, 오래된 종이와 유사한 질감을 더해 전통적인 분위기를 표현합니다.
 
-```text
-app/
-  main.py                 FastAPI entrypoint
-  schemas.py              API request/response models
-  store.py                In-memory job store for the current prototype
-  models/
-    base.py               Shared model adapter protocol
-    opencv_ink.py         OpenCV Sumukhwa adapter
-    opencv_minhwa.py      OpenCV Minhwa adapter
-    registry.py           Adapter selection
-  services/
-    download.py           Direct video / YouTube download
-  video/
-    metadata.py           Video metadata probing
-    io.py                 Frame/audio extraction and video writing
-    shots.py              Shot/keyframe detection utilities
-    pipeline.py           End-to-end video conversion pipeline
-scripts/
-  generate_style_previews.py
-```
+주요 변환 방식:
+- 색상 영역을 단순화하여 민화풍의 팔레트 기반 표현을 구현
+- 형태 윤곽선을 강조하고, 명암을 평탄화해 그림 같은 느낌을 부여
+- 색상 부스트와 채도 조정을 통해 전통적인 색감 강화
+- 손그림 같은 선의 불규칙성과 pigment bleed 효과를 적용
+- aged paper texture를 합성해 오래된 그림 같은 배경을 생성
 
-## Requirements
+## 시스템 구성
 
-- Python 3.11+
-- FFmpeg available on the system path
-- Render or local machine with enough temporary disk space for frames and output videos
+- FastAPI 서버를 통해 MV 업로드 및 작업 요청 처리
+- 프레임 추출 후 각 프레임에 스타일 변환 적용
+- 변환된 프레임을 다시 비디오로 재조합
+- 원본 오디오를 유지한 채 최종 결과물 생성
 
-Install dependencies:
+## 실행 방법
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Local Run
-
-Create a local `.env` from `.env.example`, then run:
-
-```powershell
-.\run_server.ps1
-```
-
-Or run directly:
-
 ```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Health checks:
+## 주요 디렉터리
 
-```bash
-curl http://localhost:8000/health
-curl http://localhost:8000/api/v1/model-adapters
-```
+- app/main.py : FastAPI 엔트리포인트
+- app/models/opencv_ink.py : 수묵화 스타일 변환 로직
+- app/models/opencv_minhwa.py : 민화 스타일 변환 로직
+- app/models/registry.py : 스타일 어댑터 선택
+- app/video/ : 프레임 추출 및 비디오 재조합 로직
 
-## API
+## 한 줄 정리
 
-### Create Conversion Job From URL
-
-`POST /api/v1/mv-conversions`
-
-```json
-{
-  "userId": "user_001",
-  "projectId": "project_001",
-  "inputVideoUrl": "https://example.com/input.mp4",
-  "originalFileName": "input.mp4",
-  "styleType": "sumukhwa",
-  "preserveAudio": true,
-  "callbackUrl": null
-}
-```
-
-Use `styleType=minhwa` for the folk painting style.
-
-Response:
-
-```json
-{
-  "jobId": "job_xxxxxxxxxxxx",
-  "status": "queued",
-  "message": "Video conversion job has been created."
-}
-```
-
-### Create Conversion Job From File
-
-`POST /api/v1/mv-conversions/upload`
-
-Use this endpoint when the backend downloads the source MV first and sends the video file directly to the AI server.
-
-Content type: `multipart/form-data`
-
-| Field | Type | Required | Description |
-| --- | --- | --- | --- |
-| `file` | file | Yes | Source video file. Supports `mp4`, `mov`, `m4v`, `webm`. |
-| `userId` | string | Yes | User identifier. |
-| `projectId` | string | Yes | Project identifier. |
-| `styleType` | string | Yes | `sumukhwa` or `minhwa`. |
-| `preserveAudio` | boolean | No | Whether to keep the original audio. Default: `true`. |
-| `callbackUrl` | string | No | Backend callback URL. Empty value is treated as no callback. |
-| `originalFileName` | string | No | Original file name for tracking. |
-
-Example:
-
-```bash
-curl -X POST http://localhost:8000/api/v1/mv-conversions/upload \
-  -F "file=@input.mp4" \
-  -F "userId=user_001" \
-  -F "projectId=project_001" \
-  -F "styleType=sumukhwa" \
-  -F "preserveAudio=true"
-```
-
-Response:
-
-```json
-{
-  "jobId": "job_xxxxxxxxxxxx",
-  "status": "queued",
-  "message": "Uploaded video conversion job has been created."
-}
-```
-
-### Check Job Status
-
-`GET /api/v1/mv-conversions/{jobId}`
-
-```json
-{
-  "jobId": "job_xxxxxxxxxxxx",
-  "status": "processing",
-  "progress": 35,
-  "currentStep": "style_transfer",
-  "processingTimeSeconds": 120.5,
-  "styleTransferTimeSeconds": null,
-  "errorMessage": null
-}
-```
-
-### Get Result
-
-`GET /api/v1/mv-conversions/{jobId}/result`
-
-```json
-{
-  "jobId": "job_xxxxxxxxxxxx",
-  "status": "completed",
-  "outputVideoUrl": "/outputs/job_xxxxxxxxxxxx_output.mp4",
-  "thumbnailUrl": "/outputs/job_xxxxxxxxxxxx_thumbnail.png",
-  "duration": 4.0,
-  "outputFileSize": 1234567,
-  "processingTimeSeconds": 180.2,
-  "styleTransferTimeSeconds": 150.8
-}
-```
-
-`processingTimeSeconds` is the whole job time. `styleTransferTimeSeconds` is the frame style-transfer section only.
-
-## Environment Variables
-
-Recommended default for the current API:
-
-```env
-ENABLE_REAL_PIPELINE=true
-MODEL_ADAPTER=auto
-PUBLIC_BASE_URL=
-MAX_INPUT_VIDEO_MB=200
-```
-
-`MODEL_ADAPTER=auto` maps styles automatically:
-
-```text
-sumukhwa -> opencv_ink
-minhwa   -> opencv_minhwa
-```
-
-Use a fixed adapter only when testing:
-
-```env
-MODEL_ADAPTER=opencv_ink
-MODEL_ADAPTER=opencv_minhwa
-```
-
-## Sumukhwa Settings
-
-The OpenCV Sumukhwa adapter is the fast default for `styleType=sumukhwa`.
-
-```env
-OPENCV_INK_STRENGTH=0.92
-OPENCV_WASH_STRENGTH=0.86
-OPENCV_PAPER_STRENGTH=0.18
-OPENCV_WHITE_SPACE=0.26
-OPENCV_DETAIL_LEVELS=8
-OPENCV_TEXTURE_STRENGTH=0.22
-OPENCV_DETAIL_PRESERVE=0.20
-OPENCV_FINE_LINE_STRENGTH=0.34
-OPENCV_OUTLINE_STRENGTH=0.48
-```
-
-This style emphasizes monochrome ink wash, hanji paper tone, thin dark outlines, and reduced speckle noise.
-
-## Minhwa Settings
-
-The OpenCV Minhwa adapter is the fast default for `styleType=minhwa`.
-
-```env
-OPENCV_MINHWA_PALETTE_STRENGTH=0.84
-OPENCV_MINHWA_OUTLINE_STRENGTH=0.88
-OPENCV_MINHWA_LINE_THICKNESS=1
-OPENCV_MINHWA_FLATTEN_STRENGTH=0.66
-OPENCV_MINHWA_SMOOTHING_STRENGTH=0.30
-OPENCV_MINHWA_PAPER_STRENGTH=0.28
-OPENCV_MINHWA_PIGMENT_BLEED=0.00
-OPENCV_MINHWA_HAND_DRAWN_STRENGTH=0.03
-OPENCV_MINHWA_PAINT_VARIATION=0.015
-OPENCV_MINHWA_AGE_STRENGTH=0.58
-OPENCV_MINHWA_PRESERVE_BRIGHTNESS=0.22
-OPENCV_MINHWA_COLOR_FADE=0.16
-OPENCV_MINHWA_COLOR_BOOST=0.62
-OPENCV_MINHWA_INK_TONE_STRENGTH=0.84
-OPENCV_MINHWA_SHARPNESS=0.52
-OPENCV_MINHWA_TEMPORAL_BLEND=0.00
-```
-
-This style tones down the background toward hanji and emphasizes folk-painting colors on people and objects.
-
-## Preview Images
-
-Generate still-image previews with the current server adapters:
-
-```powershell
-python scripts\generate_style_previews.py D:\Guackify\test.png --output-dir outputs
-```
-
-Outputs:
-
-```text
-outputs/test01.png  # sumukhwa
-outputs/test02.png  # minhwa
-```
-
-## YouTube Inputs
-
-Direct downloadable video URLs are preferred. YouTube URLs are supported through `yt-dlp` in development mode:
-
-```json
-{
-  "inputVideoUrl": "https://youtu.be/example",
-  "originalFileName": "youtube_mv.mp4"
-}
-```
-
-Only process videos you own or are allowed to process. YouTube availability can depend on policy, region, age restrictions, cookies, and network access.
-
-## Render Deployment
-
-This repository includes `render.yaml`.
-
-Render settings:
-
-```text
-Build Command: pip install -r requirements.txt
-Start Command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-Health Check Path: /health
-Python Version: 3.12.8
-```
-
-Set environment variables in the Render dashboard. Do not upload a real `.env`.
-
-For Render, make sure these are set:
-
-```env
-ENABLE_REAL_PIPELINE=true
-MODEL_ADAPTER=auto
-MAX_INPUT_VIDEO_MB=200
-PYTHON_VERSION=3.12.8
-```
-
-If output files must be publicly persistent, connect external storage. Render local disk is not intended as permanent storage.
-
-## Git Ignore
-
-Do not commit:
-
-- `.env`
-- `.venv/`
-- `work/`
-- `outputs/`
-- downloaded model weights
-- test videos/images
-- `.safetensors`, `.pt`, `.ckpt`, `.onnx`, `.bin`
-
-Commit:
-
-- `app/`
-- `scripts/`
-- `requirements.txt`
-- `render.yaml`
-- `README.md`
-- `.env.example`
-- `.gitignore`
+Guackify는 AI 모델의 한계를 극복하고, OpenCV 기반의 전통 화풍 스타일 변환으로 MV를 시각적으로 새롭게 재해석하는 실험적 프로젝트입니다.
