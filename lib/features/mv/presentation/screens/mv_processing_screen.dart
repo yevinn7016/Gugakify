@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../../../../core/config/api_config.dart';
+
 import '../../../../core/theme/app_colors.dart';
 import '../../../../features/app_state/project_state.dart';
 import '../../../../features/auth/presentation/providers/auth_provider.dart';
@@ -31,16 +35,45 @@ class _MvProcessingScreenState extends State<MvProcessingScreen> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(milliseconds: 250), (_) {
-      final provider = context.read<ProjectProvider>();
-      final next = provider.progress + 0.05;
-      if (next >= 1) {
-        _timer?.cancel();
-        final auth = context.read<AuthProvider>();
-        provider.completeProject(saveToArchive: !auth.isGuest);
-        if (mounted) context.go('/result');
-      } else {
-        provider.updateProgress(next);
+    _startPolling();
+  }
+
+  Future<void> _startPolling() async {
+    final project = context.read<ProjectProvider>();
+
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) async {
+      try {
+        final mvId = project.mvId;
+        if (mvId == null) return;
+
+        final uri = Uri.parse('${ApiConfig.baseUrl}/api/mvs/$mvId');
+        final response = await http.get(uri);
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          final status = data['status'] as String?;
+
+          if (status == 'analyzing' || status == 'rendering') {
+            project.updateProgress(status == 'analyzing' ? 0.3 : 0.7);
+          } else if (status == 'queued') {
+            project.updateProgress(0.1);
+          } else if (status == 'completed') {
+            _timer?.cancel();
+            final videoUrl = data['videoUrl'] as String?;
+            if (videoUrl != null) {
+              project.setOutputVideoUrl(videoUrl);
+            }
+            final auth = context.read<AuthProvider>();
+            project.completeProject(saveToArchive: !auth.isGuest);
+            if (mounted) context.go('/result');
+          } else if (status == 'failed') {
+            _timer?.cancel();
+            debugPrint('[MV] Failed: ${data['error']}');
+            if (mounted) context.go('/mv/settings');
+          }
+        }
+      } catch (e) {
+        debugPrint('[MV Polling] Error: $e');
       }
     });
   }

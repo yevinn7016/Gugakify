@@ -59,6 +59,10 @@ Future<void> _startPolling() async {
 
         if (status == 'completed') {
           _timer?.cancel();
+          final audioUrl = data['audio_url'] as String?;
+          if (audioUrl != null) {
+            project.setOutputAudioUrl (audioUrl) ;
+          }
           project.updateStatus('audio_completed', newProgress: 1);
           if (mounted) context.go('/audio/result');
         }

@@ -9,6 +9,7 @@ import '../../../../features/auth/presentation/providers/auth_provider.dart';
 import '../../../../shared/widgets/gugakify_app_scaffold.dart';
 import '../../../../shared/widgets/mock_player.dart';
 import '../../../../shared/widgets/primary_lavender_button.dart';
+import '../../../../shared/widgets/real_audio_player.dart';
 
 class AudioResultScreen extends StatelessWidget {
   const AudioResultScreen({super.key});
@@ -47,7 +48,7 @@ class AudioResultScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _AudioPlayerCard(
                 fileName: outputFileName,
-                duration: duration,
+                audioUrl: project.outputAudioUrl,
                 onDownload: () => ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -429,12 +430,12 @@ class _MetaPill extends StatelessWidget {
 class _AudioPlayerCard extends StatelessWidget {
   const _AudioPlayerCard({
     required this.fileName,
-    required this.duration,
+    required this.audioUrl,
     required this.onDownload,
   });
 
   final String fileName;
-  final Duration duration;
+  final String? audioUrl;
   final VoidCallback onDownload;
 
   @override
@@ -472,9 +473,9 @@ class _AudioPlayerCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
-          MockAudioPlayer(
+          RealAudioPlayer(
             title: fileName,
-            duration: duration,
+            audioUrl: audioUrl,
             onDownload: onDownload,
           ),
         ],

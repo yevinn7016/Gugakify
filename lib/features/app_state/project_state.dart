@@ -80,6 +80,7 @@ class RecentProject {
     bool? isFavorite,
     bool? isCompleted,
     String? outputAudioUrl,
+    int? mvId,
     String? outputVideoUrl,
     String? thumbnailUrl,
     int? outputAudioDurationSeconds,
@@ -234,6 +235,8 @@ class ProjectProvider extends ChangeNotifier {
   String? midiDownloadUrl;
   String? resultUploadUrl;
   String? outputAudioUrl;
+  int? mvId;
+  String? outputVideoUrl;
   String? targetMood;
   String? conversionIntensity;
   int? mvLength;
@@ -362,6 +365,21 @@ class ProjectProvider extends ChangeNotifier {
     progress = 0.1;
     currentProjectId ??= DateTime.now().millisecondsSinceEpoch.toString();
     pendingAudioResult = false;
+    notifyListeners();
+  }
+
+  void setOutputAudioUrl(String url) {
+    outputAudioUrl = url;
+    notifyListeners();
+  }
+
+  void setMvId(int id) {
+    mvId = id;
+    notifyListeners();
+  }
+
+  void setOutputVideoUrl(String url) {
+    outputVideoUrl = url;
     notifyListeners();
   }
 

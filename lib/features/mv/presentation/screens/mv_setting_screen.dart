@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../../../../core/config/api_config.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../features/app_state/project_state.dart';
@@ -89,7 +92,7 @@ class MvSettingScreen extends StatelessWidget {
                 label: 'MV 생성 시작',
                 icon: const Icon(Icons.movie_creation_outlined, size: 19),
                 onPressed: canStart
-                    ? () {
+                    ? () async {
                         // TODO(backend integration point): route through the backend.
                         // URL: POST /api/v1/mv-conversions
                         // File: POST /api/v1/mv-conversions/upload
@@ -100,7 +103,41 @@ class MvSettingScreen extends StatelessWidget {
                         );
                         project.updateStatus('mv_processing', newProgress: 0);
                         context.go('/mv/processing');
+                      
+                      try {
+                        final projectId = int.tryParse(project.aiJobId ?? '');
+                        if (projectId == null) return;
+
+                        final uri = Uri.parse('${ApiConfig.baseUrl}/api/mvs');
+                        final request = http.MultipartRequest('POST', uri);
+                        request.fields['project_id'] = projectId.toString();
+                        request.fields['mood'] = 'balanced';
+                        request.fields['jangdan'] = 'jajinmori';
+
+                        if(project.outputAudioUrl != null) {
+                          final audioResponse = await http.get(
+                            Uri.parse(project.outputAudioUrl!),
+                          );
+                          request.files.add(
+                            http.MultipartFile.fromBytes(
+                              'audio',
+                              audioResponse.bodyBytes,
+                              filename: 'audio.wav',
+                            ),
+                          );
+                        }
+
+                        final streamedResponse = await request.send();
+                        final response = await http.Response.fromStream(streamedResponse);
+
+                        if (response.statusCode >= 200 && response.statusCode < 300) {
+                          final data = jsonDecode(response.body);
+                          project.setMvId(data['mv_id'] as int);
+                        }
+                      } catch (e){
+                        debugPrint('[MV] Error: $e');
                       }
+                    }
                     : null,
               ),
             ],

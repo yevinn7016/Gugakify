@@ -24,7 +24,7 @@ async def request_mv_conversion(
     # AI 서버에 MV 변환 요청
     audio_bytes = await audio.read()
 
-    async with httpx.AsyncClient(timeout=60.0) as client:
+    async with httpx.AsyncClient(timeout=300.0) as client:
         response = await client.post(
             f"{AI_MV_SERVER}/mv/jobs",
             headers={"X-API-Key": MV_API_KEY},
@@ -44,11 +44,13 @@ async def request_mv_conversion(
 
     # DB에 저장
     mv = MvGeneration(
-        project_id=project_id,
-        conversion_id=1,
-        mv_url=None,
-        visual_style=mood
+    project_id=project_id,
+    conversion_id=1,
+    mv_url=None,
+    visual_style=mood,
+    job_id=job_id,
     )
+
     db.add(mv)
     db.commit()
     db.refresh(mv)
@@ -60,11 +62,21 @@ async def request_mv_conversion(
     }
 
 @router.get("/api/mvs/{mv_id}")
-async def get_mv_status(mv_id: int, job_id: str, db: Session = Depends(get_db)):
-    # AI 서버에 상태 조회
+async def get_mv_status(mv_id: int, db: Session = Depends(get_db)):
+    mv = db.query(MvGeneration).filter(MvGeneration.id == mv_id).first()
+    if not mv:
+        raise HTTPException(status_code=404, detail="MV 작업을 찾을 수 없습니다.")
+
+    if mv.mv_url:
+        return {
+            "mv_id": mv_id,
+            "status": "completed",
+            "videoUrl": mv.mv_url,
+        }
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.get(
-            f"{AI_MV_SERVER}/mv/jobs/{job_id}",
+            f"{AI_MV_SERVER}/mv/jobs/{mv.job_id}",
             headers={"X-API-Key": MV_API_KEY}
         )
 
@@ -74,15 +86,10 @@ async def get_mv_status(mv_id: int, job_id: str, db: Session = Depends(get_db)):
     data = response.json()
     status = data.get("status")
 
-    # 완료되면 Cloudinary에 영상 저장
     if status == "completed":
         video_url = AI_MV_SERVER + data.get("videoUrl", "")
-
         async with httpx.AsyncClient(timeout=120.0) as client:
-            video_response = await client.get(
-                video_url,
-                headers={"X-API-Key": MV_API_KEY}
-            )
+            video_response = await client.get(video_url, headers={"X-API-Key": MV_API_KEY})
 
         import cloudinary.uploader
         import uuid
@@ -94,26 +101,21 @@ async def get_mv_status(mv_id: int, job_id: str, db: Session = Depends(get_db)):
             folder="gugakify"
         )
         final_url = result["secure_url"]
-
-        # DB 업데이트
-        mv = db.query(MvGeneration).filter(MvGeneration.id == mv_id).first()
-        if mv:
-            mv.mv_url = final_url
-            db.commit()
+        mv.mv_url = final_url
+        db.commit()
 
         return {
             "mv_id": mv_id,
             "status": "completed",
-            "video_url": final_url,
+            "videoUrl": final_url,
             "bpm": data.get("bpm"),
             "mood": data.get("mood"),
             "jangdan": data.get("jangdan"),
-            "duration": data.get("duration")
         }
 
     return {
         "mv_id": mv_id,
         "status": status,
-        "video_url": None,
-        "error": data.get("error")
+        "videoUrl": None,
+        "error": data.get("error"),
     }

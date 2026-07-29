@@ -35,9 +35,10 @@ class MvGeneration(Base):
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     project_id = Column(BigInteger, nullable=False)
     conversion_id = Column(BigInteger, nullable=False)
+    job_id = Column(String(100), nullable=True)  # 추가
     mv_url = Column(Text)
     visual_style = Column(String(100))
-    created_at = Column(TIMESTAMP, server_default=func.now())
+    created_at = Column(TIMESTAMP, server_default=func.now()) 
 
 class RealtimeEffect(Base):
     __tablename__ = "realtime_effects"

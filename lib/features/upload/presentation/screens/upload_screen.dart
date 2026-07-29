@@ -118,7 +118,7 @@ class _UploadScreenState extends State<UploadScreen> {
         type: FileType.custom,
         allowedExtensions: const ['mp3', 'wav', 'm4a'],
         allowMultiple: false,
-        withData: kIsWeb,
+        withData: true,
       );
     } on Exception catch (error) {
       if (!mounted) return;
