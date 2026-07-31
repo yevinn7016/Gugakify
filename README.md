@@ -45,162 +45,244 @@ K-POP·POP 음원을 국악기 중심의 음악으로 변환하고,
 
 ## 화면 구성
 
-<table>
+<table align="center" width="720">
+  <!-- 01, 02 이미지 -->
   <tr>
-    <td align="center" width="50%">
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/01_login.jpeg">
-        <img src="docs/screenshots/01_login.jpeg" width="300" alt="로그인 화면">
+        <img
+          src="docs/screenshots/01_login.jpeg"
+          width="280"
+          height="570"
+          alt="로그인 화면"
+        >
       </a>
     </td>
-    <td align="center" width="50%">
+
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/02_home.jpeg">
-        <img src="docs/screenshots/02_home.jpeg" width="300" alt="홈 화면">
+        <img
+          src="docs/screenshots/02_home.jpeg"
+          width="280"
+          height="570"
+          alt="홈 화면"
+        >
       </a>
     </td>
   </tr>
+
+  <!-- 01, 02 설명 -->
   <tr>
-    <td align="center" valign="top">
+    <td align="center" valign="middle" width="360" height="75">
       <b>01. 로그인</b><br>
-      Google 계정으로 로그인하거나 비회원으로 서비스를 이용합니다.
+      Google 계정으로 로그인하거나<br>
+      비회원으로 서비스를 이용합니다.
     </td>
-    <td align="center" valign="top">
+
+    <td align="center" valign="middle" width="360" height="75">
       <b>02. 홈</b><br>
-      새 변환을 시작하고 최근 프로젝트의 상태와 결과를 확인합니다.
+      새 변환을 시작하고 최근 프로젝트의<br>
+      상태와 결과를 확인합니다.
     </td>
   </tr>
-</table>
 
-<br>
-
-<table>
+  <!-- 03, 04 이미지 -->
   <tr>
-    <td align="center" width="50%">
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/03_service_intro.jpeg">
-        <img src="docs/screenshots/03_service_intro.jpeg" width="300" alt="서비스 소개 화면">
+        <img
+          src="docs/screenshots/03_service_intro.jpeg"
+          width="280"
+          height="570"
+          alt="서비스 소개 화면"
+        >
       </a>
     </td>
-    <td align="center" width="50%">
+
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/04_audio_url_input.jpeg">
-        <img src="docs/screenshots/04_audio_url_input.jpeg" width="300" alt="URL 입력 화면">
+        <img
+          src="docs/screenshots/04_audio_url_input.jpeg"
+          width="280"
+          height="570"
+          alt="URL 입력 화면"
+        >
       </a>
     </td>
   </tr>
+
+  <!-- 03, 04 설명 -->
   <tr>
-    <td align="center" valign="top">
+    <td align="center" valign="middle" width="360" height="75">
       <b>03. 서비스 소개</b><br>
-      서비스의 핵심 기능과 이용 순서, 저작권 안내를 제공합니다.
+      핵심 기능과 이용 순서,<br>
+      저작권 안내를 제공합니다.
     </td>
-    <td align="center" valign="top">
+
+    <td align="center" valign="middle" width="360" height="75">
       <b>04. 음원 URL 입력</b><br>
-      프로젝트 이름과 음원 또는 영상 URL을 입력합니다.
+      프로젝트 이름과 음원 또는<br>
+      영상 URL을 입력합니다.
     </td>
   </tr>
-</table>
 
-<br>
-
-<table>
+  <!-- 05, 06 이미지 -->
   <tr>
-    <td align="center" width="50%">
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/05_audio_file_upload.jpeg">
-        <img src="docs/screenshots/05_audio_file_upload.jpeg" width="300" alt="파일 업로드 화면">
+        <img
+          src="docs/screenshots/05_audio_file_upload.jpeg"
+          width="280"
+          height="570"
+          alt="파일 업로드 화면"
+        >
       </a>
     </td>
-    <td align="center" width="50%">
+
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/06_audio_settings.jpeg">
-        <img src="docs/screenshots/06_audio_settings.jpeg" width="300" alt="국악 변환 설정 화면">
+        <img
+          src="docs/screenshots/06_audio_settings.jpeg"
+          width="280"
+          height="570"
+          alt="국악 변환 설정 화면"
+        >
       </a>
     </td>
   </tr>
+
+  <!-- 05, 06 설명 -->
   <tr>
-    <td align="center" valign="top">
+    <td align="center" valign="middle" width="360" height="75">
       <b>05. 음원 파일 업로드</b><br>
-      MP3·WAV·M4A 파일을 선택하고 이용 권한을 확인합니다.
+      MP3·WAV·M4A 파일을 선택하고<br>
+      이용 권한을 확인합니다.
     </td>
-    <td align="center" valign="top">
+
+    <td align="center" valign="middle" width="360" height="75">
       <b>06. 국악 변환 설정</b><br>
-      보컬 멜로디와 반주를 연주할 국악기를 각각 선택합니다.
+      보컬 멜로디와 반주를 연주할<br>
+      국악기를 각각 선택합니다.
     </td>
   </tr>
-</table>
 
-<br>
-
-<table>
+  <!-- 07, 08 이미지 -->
   <tr>
-    <td align="center" width="50%">
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/07_audio_result_top.jpeg">
-        <img src="docs/screenshots/07_audio_result_top.jpeg" width="300" alt="국악 음원 결과 화면">
+        <img
+          src="docs/screenshots/07_audio_result_top.jpeg"
+          width="280"
+          height="570"
+          alt="국악 음원 결과 화면"
+        >
       </a>
     </td>
-    <td align="center" width="50%">
+
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/08_audio_result_detail.jpeg">
-        <img src="docs/screenshots/08_audio_result_detail.jpeg" width="300" alt="국악 음원 상세 화면">
+        <img
+          src="docs/screenshots/08_audio_result_detail.jpeg"
+          width="280"
+          height="570"
+          alt="국악 음원 상세 화면"
+        >
       </a>
     </td>
   </tr>
+
+  <!-- 07, 08 설명 -->
   <tr>
-    <td align="center" valign="top">
+    <td align="center" valign="middle" width="360" height="75">
       <b>07. 국악 음원 완성</b><br>
-      생성된 WAV 음원을 재생하거나 내려받을 수 있습니다.
+      생성된 WAV 음원을 재생하거나<br>
+      내려받을 수 있습니다.
     </td>
-    <td align="center" valign="top">
+
+    <td align="center" valign="middle" width="360" height="75">
       <b>08. 음원 결과 상세</b><br>
-      사용 악기와 처리 방식, 파일명과 음원 길이를 확인합니다.
+      사용 악기와 처리 방식,<br>
+      파일명과 음원 길이를 확인합니다.
     </td>
   </tr>
-</table>
 
-<br>
-
-<table>
+  <!-- 09, 10 이미지 -->
   <tr>
-    <td align="center" width="50%">
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/09_mv_settings_top.jpeg">
-        <img src="docs/screenshots/09_mv_settings_top.jpeg" width="300" alt="전통 MV 설정 화면">
+        <img
+          src="docs/screenshots/09_mv_settings_top.jpeg"
+          width="280"
+          height="570"
+          alt="전통 MV 설정 화면"
+        >
       </a>
     </td>
-    <td align="center" width="50%">
+
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/10_mv_settings_detail.jpeg">
-        <img src="docs/screenshots/10_mv_settings_detail.jpeg" width="300" alt="MV 설정 요약 화면">
+        <img
+          src="docs/screenshots/10_mv_settings_detail.jpeg"
+          width="280"
+          height="570"
+          alt="MV 설정 요약 화면"
+        >
       </a>
     </td>
   </tr>
+
+  <!-- 09, 10 설명 -->
   <tr>
-    <td align="center" valign="top">
+    <td align="center" valign="middle" width="360" height="75">
       <b>09. 전통 MV 설정</b><br>
-      전통 화풍과 결과 영상의 화면 비율을 선택합니다.
+      전통 화풍과 결과 영상의<br>
+      화면 비율을 선택합니다.
     </td>
-    <td align="center" valign="top">
+
+    <td align="center" valign="middle" width="360" height="75">
       <b>10. MV 설정 요약</b><br>
-      선택한 스타일과 영상 비율, 처리 방식을 확인합니다.
+      선택한 스타일과 영상 비율,<br>
+      처리 방식을 확인합니다.
     </td>
   </tr>
-</table>
 
-<br>
-
-<table>
+  <!-- 11, 12 이미지 -->
   <tr>
-    <td align="center" width="50%">
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/11_final_result.jpeg">
-        <img src="docs/screenshots/11_final_result.jpeg" width="300" alt="최종 결과 화면">
+        <img
+          src="docs/screenshots/11_final_result.jpeg"
+          width="280"
+          height="570"
+          alt="최종 결과 화면"
+        >
       </a>
     </td>
-    <td align="center" width="50%">
+
+    <td align="center" valign="middle" width="360" height="590">
       <a href="docs/screenshots/12_mypage.jpeg">
-        <img src="docs/screenshots/12_mypage.jpeg" width="300" alt="마이페이지 화면">
+        <img
+          src="docs/screenshots/12_mypage.jpeg"
+          width="280"
+          height="570"
+          alt="마이페이지 화면"
+        >
       </a>
     </td>
   </tr>
+
+  <!-- 11, 12 설명 -->
   <tr>
-    <td align="center" valign="top">
+    <td align="center" valign="middle" width="360" height="75">
       <b>11. 최종 결과</b><br>
-      완성된 전통 MV와 국악 음원을 재생하고 다운로드합니다.
+      완성된 전통 MV와 국악 음원을<br>
+      재생하고 다운로드합니다.
     </td>
-    <td align="center" valign="top">
+
+    <td align="center" valign="middle" width="360" height="75">
       <b>12. 마이페이지</b><br>
-      사용자 정보와 프로젝트, 즐겨찾기 및 결과물을 관리합니다.
+      사용자 정보와 프로젝트,<br>
+      즐겨찾기 및 결과물을 관리합니다.
     </td>
   </tr>
 </table>
