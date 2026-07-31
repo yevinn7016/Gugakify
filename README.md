@@ -5,18 +5,13 @@
 **AI로 익숙한 음악을 국악 스타일 음원과 전통 미학 MV로 재해석하는 서비스**
 
 K-POP·POP 음원을 국악기 중심의 음악으로 변환하고,  
-수묵화와 민화 스타일의 전통 MV를 생성하는 Flutter 애플리케이션입니다.
+수묵화와 민화 스타일의 전통 MV를 생성하는 Flutter 애플리케이션
 
 </div>
 
 ---
 
-## 서비스 소개
-
-**Gugakify**는 사용자가 입력한 음원 또는 영상의 음악적 특징을 분석하여  
-보컬 멜로디와 반주를 국악기 음색으로 재구성하고, 변환된 음악에 어울리는 전통 화풍의 MV를 생성합니다.
-
-### 주요 기능
+## 주요 기능
 
 - Google 로그인 및 비회원 이용
 - URL 입력 또는 음원 파일 업로드
@@ -130,8 +125,7 @@ K-POP·POP 음원을 국악기 중심의 음악으로 변환하고,
 | Framework | Flutter |
 | Language | Dart |
 | Design | Figma |
-| Authentication | Google Login / Firebase 연동 |
-| Target | Android, Web |
+| Target | Android |
 | Version Control | Git, GitHub |
 
 > 패키지와 정확한 버전 정보는 `pubspec.yaml` 및 `pubspec.lock`을 기준으로 확인합니다.
@@ -180,31 +174,6 @@ flutter run -d <DEVICE_ID>
 
 ---
 
-## Firebase 설정
-
-Google 로그인을 사용하려면 팀에서 공유받은 Firebase 설정 파일을 각 플랫폼 경로에 추가해야 합니다.
-
-```text
-Android: android/app/google-services.json
-iOS:     ios/Runner/GoogleService-Info.plist
-```
-
-Firebase 설정 파일과 API 키 등 민감한 정보는 공개 저장소에 업로드하지 않습니다.
-
----
-
-## 코드 검사
-
-코드를 올리기 전에 다음 명령을 실행합니다.
-
-```bash
-dart format .
-flutter analyze
-flutter test
-```
-
----
-
 ## 프로젝트 구조
 
 ```text
@@ -227,42 +196,11 @@ frontend/
 
 ---
 
-## 협업 규칙
-
-### 브랜치 이름
-
-```text
-feature/<기능명>
-fix/<수정내용>
-docs/<문서내용>
-```
-
-### 커밋 메시지 예시
-
-```text
-feat: 음원 파일 업로드 기능 추가
-fix: 결과 영상 재생 오류 수정
-docs: 화면 소개 이미지 추가
-```
-
----
-
 ## 저작권 안내
 
 - 본인이 소유하거나 이용 권한이 있는 음원만 변환할 수 있습니다.
 - 타인의 저작물을 무단으로 업로드하거나 결과물을 배포해서는 안 됩니다.
 - 현재 결과물은 대회 시연 및 개인 학습 목적의 결과로 사용됩니다.
-
----
-
-## 팀 정보
-
-| 이름 | 역할 | 담당 |
-| --- | --- | --- |
-| 이름 | Frontend | Flutter UI 및 API 연동 |
-| 이름 | Backend | 서버, 인증 및 데이터 관리 |
-| 이름 | AI | 국악 음원 및 MV 생성 |
-| 이름 | Design | UX/UI 및 Figma |
 
 ---
 
