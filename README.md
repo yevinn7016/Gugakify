@@ -83,17 +83,19 @@ app/
 - 변환된 프레임을 다시 영상으로 재조합해 결과물을 생성 가능
 - 원본 오디오를 유지한 채 최종 결과 영상 생성 가능
 
-### 예시 01
+### 예시 01 - 수묵화 ver
 
 | 원본 영상 | 변환 영상 |
 |:---:|:---:|
-| https://github.com/user-attachments/assets/원본영상-ID | https://github.com/user-attachments/assets/변환영상-ID |
+| [![원본 영상](https://img.youtube.com/vi/zMGDeFEI0wc/hqdefault.jpg)](https://youtu.be/zMGDeFEI0wc) | [![변환 영상](https://img.youtube.com/vi/yCKenFdf6Us/hqdefault.jpg)](https://youtu.be/yCKenFdf6Us) |
 
-### 예시 02
+### 예시 02 - 민화 ver
 
 | 원본 영상 | 변환 영상 |
 |:---:|:---:|
-| [![원본 영상](./images/original-thumbnail.png)](원본_영상_URL) | [![변환 영상](./images/converted-thumbnail.png)](변환_영상_URL) |
+| [![원본 영상](https://img.youtube.com/vi/TPVUm7HLNkU/hqdefault.jpg)](https://youtu.be/TPVUm7HLNkU) | [![변환 영상](https://img.youtube.com/vi/5EvbZOgHwvk/hqdefault.jpg)](https://youtu.be/5EvbZOgHwvk) |
+
+---
 
 ## 기술 스택
 
@@ -103,6 +105,8 @@ app/
 - NumPy
 - FFmpeg
 - Uvicorn
+
+---
 
 ## 시작하기
 
