@@ -135,9 +135,3 @@ uvicorn main:app --reload
 ```
 http://127.0.0.1:8000/docs
 ```
-
----
-
-## 👥 팀 정보
-
-2026 AI융합학부 IT경진대회 출품작
