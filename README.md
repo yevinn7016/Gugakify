@@ -71,13 +71,17 @@ Gugakify는 기능별로 브랜치를 분리하여 개발했습니다.
 ```text
 Gugakify
 │
-├── main                         # 프로젝트 소개
+├── main                    # 프로젝트 전체 소개
 │
-├── frontend                     # Flutter 애플리케이션
-├── backend                      # Backend API 서버
-├── music-ai                     # 국악 스타일 음원 변환 AI
-├── mv-style-ai                  # 수묵화·민화 MV 스타일 변환 AI
-└── rhythm-mv-ai                 # 국악 장단 기반 MV 연출 AI
+├── backend                 # 백엔드 API 및 서비스 로직
+│
+├── frontend                # Flutter 기반 애플리케이션
+│
+├── music-ai                # 국악 스타일 음원 변환 AI
+│
+├── mv-ai                   # 국악 장단 기반 MV 연출 AI
+│
+└── traditional_style_ai    # 수묵화·민화 스타일 MV 변환 AI
 ```
 
 각 기능의 상세 구현 내용과 실행 방법은 해당 브랜치의 README에서 확인할 수 있습니다.
