@@ -79,9 +79,9 @@ Gugakify
 │
 ├── music-ai                # 국악 스타일 음원 변환 AI
 │
-├── mv-ai                   # 국악 장단 기반 MV 연출 AI
+├── mv-ai                   # 국악 장단 기반 MV 연출 시스템
 │
-└── traditional_style_ai    # 수묵화·민화 스타일 MV 변환 AI
+└── traditional_style_ai    # 수묵화·민화 스타일 MV 변환 시스템
 ```
 
 각 기능의 상세 구현 내용과 실행 방법은 해당 브랜치의 README에서 확인할 수 있습니다.
